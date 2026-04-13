@@ -1,0 +1,194 @@
+[
+  {
+    "id": 1,
+    "title": "React Component",
+    "description": "Build production-ready reusable component.",
+    "prompt": "You are a senior React engineer. Create {{COMPONENT_NAME}}.\nInput: {{PROPS}}, {{FEATURE}}\nConstraints: functional + hooks, TypeScript interfaces, Tailwind styling, reusable, no logic bloat.\nOutput: single component file.",
+    "category": "Code Generation",
+    "tags": ["react", "component", "typescript", "tailwind"]
+  },
+  {
+    "id": 2,
+    "title": "Custom Hook",
+    "description": "Encapsulate reusable logic.",
+    "prompt": "You are a React expert. Create use{{HOOK_NAME}}.\nInput: {{LOGIC}}\nConstraints: encapsulate state/effects, minimal API, cleanup, no UI coupling.\nOutput: hook code.",
+    "category": "Code Generation",
+    "tags": ["react", "hook"]
+  },
+  {
+    "id": 3,
+    "title": "Utility Function",
+    "description": "Pure reusable JS logic.",
+    "prompt": "You are a JS expert. Create {{FUNCTION_NAME}}.\nInput: {{INPUT}}, {{OUTPUT}}, {{EDGE_CASES}}\nConstraints: pure, no side effects, handle edge cases, add JSDoc.\nOutput: function only.",
+    "category": "Code Generation",
+    "tags": ["javascript", "utility"]
+  },
+  {
+    "id": 4,
+    "title": "Form (Production)",
+    "description": "Build real-world form with validation.",
+    "prompt": "You are a frontend expert. Build form for {{FEATURE}}.\nInput: {{FIELDS}}, {{API_ENDPOINT}}\nConstraints: react-hook-form, validation, inline errors, disable on submit, optimistic UX.\nOutput: component code.",
+    "category": "Code Generation",
+    "tags": ["react", "form"]
+  },
+  {
+    "id": 5,
+    "title": "Runtime Debug",
+    "description": "Fix runtime errors.",
+    "prompt": "You are a debugging expert. Fix error.\nInput: {{ERROR}}, {{CODE}}, {{CONTEXT}}\nConstraints: identify root cause, check async/state, minimal explanation.\nOutput: fixed code.",
+    "category": "Debugging",
+    "tags": ["debugging", "runtime"]
+  },
+  {
+    "id": 6,
+    "title": "Async Race Condition",
+    "description": "Resolve async conflicts.",
+    "prompt": "You are a JS expert. Fix race condition.\nInput: {{FLOW}}\nConstraints: use AbortController/cleanup, prevent stale updates, deterministic state.\nOutput: corrected code.",
+    "category": "Debugging",
+    "tags": ["async", "race-condition"]
+  },
+  {
+    "id": 7,
+    "title": "State Bug",
+    "description": "Fix React state issues.",
+    "prompt": "You are a React expert. Fix state issue.\nInput: {{CODE}}, {{STATE}}\nConstraints: immutability, correct deps, avoid stale closures.\nOutput: corrected code.",
+    "category": "Debugging",
+    "tags": ["react", "state"]
+  },
+  {
+    "id": 8,
+    "title": "Clean Refactor",
+    "description": "Improve readability and structure.",
+    "prompt": "You are a senior engineer. Refactor code.\nInput: {{CODE}}\nConstraints: DRY, clear naming, split concerns, no behavior change.\nOutput: refactored code.",
+    "category": "Refactoring",
+    "tags": ["clean-code", "refactor"]
+  },
+  {
+    "id": 9,
+    "title": "Performance Optimization",
+    "description": "Optimize rendering performance.",
+    "prompt": "You are a performance expert. Optimize {{COMPONENT}}.\nInput: {{CODE}}\nConstraints: reduce re-renders, use memo/hooks wisely, remove unnecessary effects.\nOutput: optimized code.",
+    "category": "Refactoring",
+    "tags": ["performance", "react"]
+  },
+  {
+    "id": 10,
+    "title": "TypeScript Upgrade",
+    "description": "Add strict typing.",
+    "prompt": "You are a TS expert. Convert code.\nInput: {{CODE}}\nConstraints: strict types, no any, use generics/interfaces.\nOutput: typed code.",
+    "category": "Refactoring",
+    "tags": ["typescript"]
+  },
+  {
+    "id": 11,
+    "title": "Edge Case Analysis",
+    "description": "Identify edge scenarios.",
+    "prompt": "You are a QA engineer. Analyze {{FEATURE}}.\nConstraints: empty states, failures, invalid input, concurrency.\nOutput: edge cases + handling.",
+    "category": "Review & QA",
+    "tags": ["qa", "edge-cases"]
+  },
+  {
+    "id": 12,
+    "title": "Bug Hunt",
+    "description": "Find hidden bugs.",
+    "prompt": "You are a reviewer. Inspect {{MODULE}}.\nConstraints: null access, memory leaks, side effects, logic flaws.\nOutput: issues + fixes.",
+    "category": "Review & QA",
+    "tags": ["bug", "review"]
+  },
+  {
+    "id": 13,
+    "title": "README Generator",
+    "description": "Create concise docs.",
+    "prompt": "You are a tech writer. Write README.\nInput: {{PROJECT}}\nConstraints: setup, usage, examples, concise.\nOutput: markdown.",
+    "category": "Documentation",
+    "tags": ["readme"]
+  },
+  {
+    "id": 14,
+    "title": "JSDoc",
+    "description": "Add inline documentation.",
+    "prompt": "You are a JS expert. Document {{FUNCTION}}.\nConstraints: @param, @returns, example, TS-friendly.\nOutput: JSDoc only.",
+    "category": "Documentation",
+    "tags": ["jsdoc"]
+  },
+  {
+    "id": 15,
+    "title": "Component Architecture",
+    "description": "Design scalable feature structure.",
+    "prompt": "You are an architect. Design {{FEATURE}}.\nConstraints: container vs UI split, data flow, folder structure, scalability.\nOutput: structure + rationale.",
+    "category": "Architecture",
+    "tags": ["architecture"]
+  },
+  {
+    "id": 16,
+    "title": "State Management",
+    "description": "Choose state strategy.",
+    "prompt": "You are an architect. Choose state solution.\nInput: {{SCENARIO}}\nConstraints: compare local, context, Zustand, Redux, justify choice.\nOutput: decision + code.",
+    "category": "Architecture",
+    "tags": ["state-management"]
+  },
+  {
+    "id": 17,
+    "title": "API Client",
+    "description": "Create reusable API layer.",
+    "prompt": "You are a frontend engineer. Create apiClient.\nInput: {{BASE_URL}}\nConstraints: fetch/axios, error handling, auth headers, reusable methods.\nOutput: client code.",
+    "category": "API Integration",
+    "tags": ["api"]
+  },
+  {
+    "id": 18,
+    "title": "Error Handling UX",
+    "description": "Handle API errors gracefully.",
+    "prompt": "You are a UX engineer. Handle {{API_CALL}} errors.\nConstraints: user-friendly messages, retry/fallback, no crash.\nOutput: implementation.",
+    "category": "API Integration",
+    "tags": ["error-handling"]
+  },
+  {
+    "id": 19,
+    "title": "Memoization",
+    "description": "Optimize heavy computations.",
+    "prompt": "You are a performance expert. Optimize {{LOGIC}}.\nConstraints: useMemo/useCallback, correct deps, avoid overuse.\nOutput: improved code.",
+    "category": "Performance",
+    "tags": ["memoization"]
+  },
+  {
+    "id": 20,
+    "title": "Lazy Loading",
+    "description": "Reduce bundle size.",
+    "prompt": "You are a frontend expert. Lazy load {{TARGET}}.\nConstraints: React.lazy + Suspense, fallback UI, route split.\nOutput: implementation.",
+    "category": "Performance",
+    "tags": ["lazy-loading"]
+  },
+  {
+    "id": 21,
+    "title": "Unit Test",
+    "description": "Test logic or hooks.",
+    "prompt": "You are a testing expert. Test {{UNIT}}.\nConstraints: Jest + RTL, edge cases, clear assertions.\nOutput: test file.",
+    "category": "Testing",
+    "tags": ["jest", "testing"]
+  },
+  {
+    "id": 22,
+    "title": "Component Test",
+    "description": "Test UI interactions.",
+    "prompt": "You are a testing expert. Test {{COMPONENT}}.\nConstraints: simulate events, validate UI/state.\nOutput: test code.",
+    "category": "Testing",
+    "tags": ["component-test"]
+  },
+  {
+    "id": 23,
+    "title": "Prompt-driven UI",
+    "description": "Dynamic AI-based UI.",
+    "prompt": "You are an AI UI engineer. Build {{FEATURE}}.\nInput: {{PROMPT}}, {{OUTPUT}}\nConstraints: dynamic rendering, loading/streaming states.\nOutput: component.",
+    "category": "AI-Native Patterns",
+    "tags": ["ai", "ui"]
+  },
+  {
+    "id": 24,
+    "title": "AI Hook",
+    "description": "Integrate AI responses.",
+    "prompt": "You are an AI engineer. Create useAI.\nInput: {{INPUT}}\nConstraints: loading/error state, cache results, abort stale calls.\nOutput: hook code.",
+    "category": "AI-Native Patterns",
+    "tags": ["ai", "hook"]
+  }
+]

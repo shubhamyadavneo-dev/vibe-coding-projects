@@ -36,7 +36,7 @@ router.get('/counter', (req, res) => {
   global.counter++;
   res.json({ counter: global.counter });
 });
-
+//  TODO: This route simulates a memory leak by creating a large array and never releasing it. Use with caution in a real application.
 router.get('/memory-leak', (req, res) => {
   const bigArray = [];
   for (let i = 0; i < 1000000; i++) {

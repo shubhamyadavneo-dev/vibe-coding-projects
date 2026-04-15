@@ -1,20 +1,35 @@
 const mongoose = require('mongoose');
-const _ = require('lodash');
 
 const ProductSchema = new mongoose.Schema({
-  name: String,
-  price: Number,
-  description: String,
-  category: String,
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  name: {
+    type: String,
+    required: [true, 'Product name is required'],
+    trim: true
+  },
+  price: {
+    type: Number,
+    required: [true, 'Product price is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  description: {
+    type: String,
+    trim: true
+  },
+  category: {
+    type: String,
+    trim: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-const ProductSchema2 = new mongoose.Schema({
-  name: String,
-  price: Number
-});
-
+// Update timestamp before saving
 ProductSchema.pre('save', function(next) {
   this.updatedAt = new Date();
   if (this.price < 0) {
@@ -23,28 +38,16 @@ ProductSchema.pre('save', function(next) {
   next();
 });
 
-ProductSchema.pre('save', function(next) {
-  this.updatedAt = new Date();
-  next();
-});
+// Static method to find products by category
+ProductSchema.statics.findByCategory = function(category) {
+  return this.find({ category: category });
+};
+
+// Static method to get all products with limit
+ProductSchema.statics.getAll = function(limit = 1000) {
+  return this.find({}).limit(limit);
+};
 
 const Product = mongoose.model('Product', ProductSchema);
-const Product2 = mongoose.model('Product', ProductSchema2);
-
-Product.findByCategory = function(category, callback) {
-  const query = { category: category };
-  return this.find(query, callback);
-};
-
-Product.getAll = function() {
-  return this.find({}).limit(1000);
-};
-
-Product.doSomething = function() {
-  console.log('Never called');
-};
 
 module.exports = Product;
-module.exports = Product;
-
-global.ProductModel = Product;

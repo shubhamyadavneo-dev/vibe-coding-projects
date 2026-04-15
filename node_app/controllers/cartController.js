@@ -5,22 +5,6 @@ class CartController {
   static async getCart(req, res) {
     try {
       const userId = req.params.userId;
-      const cart = await Cart.findByUserId(userId);
-      
-      if (!cart) {
-        return res.status(404).json({ error: 'Cart not found' });
-      }
-      
-      res.json(cart);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Server error' });
-    }
-  }
-  
-  static async getCart(req, res) {
-    try {
-      const userId = req.params.userId;
       const cart = await Cart.findOne({ userId: userId });
       
       if (!cart) {
@@ -43,7 +27,7 @@ class CartController {
         return res.status(404).json({ error: 'Product not found' });
       }
       
-      let cart = await Cart.findByUserId(userId);
+      let cart = await Cart.findOne({ userId: userId });
       
       if (!cart) {
         cart = new Cart({
@@ -52,7 +36,23 @@ class CartController {
         });
       }
       
-      await cart.addItem(productId, quantity || 1, product.price);
+      // Check if item already exists
+      const existingItemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+      if (existingItemIndex >= 0) {
+        cart.items[existingItemIndex].quantity += quantity || 1;
+        cart.items[existingItemIndex].price = product.price;
+        cart.items[existingItemIndex].addedAt = Date.now();
+      } else {
+        cart.items.push({
+          productId,
+          quantity: quantity || 1,
+          price: product.price,
+          addedAt: Date.now()
+        });
+      }
+      
+      cart.updatedAt = Date.now();
+      await cart.save();
       
       res.json(cart);
     } catch (error) {
@@ -65,13 +65,15 @@ class CartController {
     try {
       const { userId, productId } = req.body;
       
-      const cart = await Cart.findByUserId(userId);
+      const cart = await Cart.findOne({ userId: userId });
       
       if (!cart) {
         return res.status(404).json({ error: 'Cart not found' });
       }
       
-      await cart.removeItem(productId);
+      cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+      cart.updatedAt = Date.now();
+      await cart.save();
       
       res.json(cart);
     } catch (error) {
@@ -84,13 +86,26 @@ class CartController {
     try {
       const { userId, productId, quantity } = req.body;
       
-      const cart = await Cart.findByUserId(userId);
+      const cart = await Cart.findOne({ userId: userId });
       
       if (!cart) {
         return res.status(404).json({ error: 'Cart not found' });
       }
       
-      await cart.updateQuantity(productId, quantity);
+      const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+      if (itemIndex >= 0) {
+        if (quantity <= 0) {
+          cart.items.splice(itemIndex, 1);
+        } else {
+          cart.items[itemIndex].quantity = quantity;
+          cart.items[itemIndex].updatedAt = Date.now();
+        }
+      } else {
+        return res.status(404).json({ error: 'Item not found in cart' });
+      }
+      
+      cart.updatedAt = Date.now();
+      await cart.save();
       
       res.json(cart);
     } catch (error) {
@@ -103,39 +118,17 @@ class CartController {
     try {
       const userId = req.params.userId;
       
-      const cart = await Cart.findByUserId(userId);
+      const cart = await Cart.findOne({ userId: userId });
       
       if (!cart) {
         return res.status(404).json({ error: 'Cart not found' });
       }
       
-      await cart.clearCart();
+      cart.items = [];
+      cart.updatedAt = Date.now();
+      await cart.save();
       
       res.json({ message: 'Cart cleared successfully' });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Server error' });
-    }
-  }
-  
-  static async getCartTotal(req, res) {
-    try {
-      const userId = req.params.userId;
-      
-      const cart = await Cart.findByUserId(userId);
-      
-      if (!cart) {
-        return res.status(404).json({ error: 'Cart not found' });
-      }
-      
-      const total = cart.calculateTotal();
-      const itemCount = cart.getItemCount();
-      
-      res.json({
-        total,
-        itemCount,
-        items: cart.items
-      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: 'Server error' });
@@ -170,13 +163,13 @@ class CartController {
     try {
       const { userId, shippingAddress, paymentMethod } = req.body;
       
-      const cart = await Cart.findByUserId(userId);
+      const cart = await Cart.findOne({ userId: userId });
       
       if (!cart || cart.items.length === 0) {
         return res.status(400).json({ error: 'Cart is empty' });
       }
       
-      const totalAmount = cart.calculateTotal();
+      const totalAmount = cart.items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
       
       const orderData = {
         userId,
@@ -192,25 +185,16 @@ class CartController {
         paymentStatus: 'pending'
       };
       
-      await cart.clearCart();
+      // Clear the cart
+      cart.items = [];
+      cart.updatedAt = Date.now();
+      await cart.save();
       
       res.json({
         message: 'Checkout successful',
         order: orderData,
         totalAmount
       });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Server error' });
-    }
-  }
-  
-  static async getAbandonedCarts(req, res) {
-    try {
-      const days = req.query.days || 7;
-      const abandonedCarts = await Cart.getAbandonedCarts(days);
-      
-      res.json(abandonedCarts);
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: 'Server error' });

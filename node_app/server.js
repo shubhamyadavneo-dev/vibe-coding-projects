@@ -1,18 +1,20 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const _ = require('lodash');
-const mysql = require('mysql');
 const helmet = require('helmet');
 const cors = require('cors');
 const moment = require('moment');
 const request = require('request');
 const uuid = require('uuid');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const orderController = require('./controllers/orderController');
 const cartController = require('./controllers/cartController');
 const userRoutes = require('./routes/userRoutes');
+const User = require('./models/User');
 
 const app = express();
 
@@ -21,46 +23,132 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const JWT_SECRET = 'my-super-secret-key-that-is-not-secret';
-const DB_PASSWORD = 'root123';
-const API_KEY = 'sk_live_1234567890abcdef';
+// Move secrets to environment variables (TODO: implement .env)
+const JWT_SECRET = process.env.JWT_SECRET || 'my-super-secret-key-that-is-not-secret';
+const API_KEY = process.env.API_KEY || 'sk_live_1234567890abcdef';
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: DB_PASSWORD,
-  database: 'mydb'
+// MongoDB connection with updated options
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydb';
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((err) => {
+  console.error('MongoDB connection error:', err);
 });
-
-connection.connect((err) => {
-  if (err) {
-    console.log('Database connection failed');
-  } else {
-    console.log('Connected to database');
-  }
-});
-
-mongoose.connect('mongodb://localhost:27017/mydb', {
-  useNewUrlParser: false,
-  useUnifiedTopology: false,
-  useCreateIndex: false
-});
-
-const UserSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
-  createdAt: { type: Date, default: Date.now }
-});
-
-const User = mongoose.model('User', UserSchema);
-const User2 = mongoose.model('User', UserSchema);
 
 global.config = {
   secret: JWT_SECRET,
   apiKey: API_KEY
 };
 
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Node.js Messy App API',
+      version: '1.0.0',
+      description: 'A messy Node.js project with security issues and bugs - API Documentation',
+      contact: {
+        name: 'API Support',
+        email: 'support@example.com'
+      }
+    },
+    servers: [
+      {
+        url: `http://localhost:${process.env.PORT || 3001}`,
+        description: 'Development server'
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      },
+      schemas: {
+        User: {
+          type: 'object',
+          properties: {
+            _id: {
+              type: 'string',
+              description: 'User ID'
+            },
+            username: {
+              type: 'string',
+              description: 'Username'
+            },
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'User email'
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Creation timestamp'
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Last update timestamp'
+            }
+          }
+        },
+        Order: {
+          type: 'object',
+          properties: {
+            _id: {
+              type: 'string',
+              description: 'Order ID'
+            },
+            userId: {
+              type: 'string',
+              description: 'User ID'
+            },
+            products: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  productId: {
+                    type: 'string'
+                  },
+                  quantity: {
+                    type: 'integer'
+                  }
+                }
+              }
+            },
+            totalAmount: {
+              type: 'number',
+              format: 'float'
+            },
+            status: {
+              type: 'string',
+              enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+            }
+          }
+        }
+      }
+    },
+    security: [{
+      bearerAuth: []
+    }]
+  },
+  apis: ['./routes/*.js', './controllers/*.js', './server.js']
+};
+
+const swaggerSpec = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Updated authentication middleware
 function authenticate(req, res, next) {
   const token = req.headers['authorization'];
   if (token) {
@@ -68,70 +156,124 @@ function authenticate(req, res, next) {
       const decoded = jwt.verify(token, JWT_SECRET);
       req.user = decoded;
     } catch (err) {
+      // Token verification failed - continue without authentication
+      console.warn('Token verification failed:', err.message);
     }
   }
   next();
 }
 
-app.get('/users/:id', (req, res) => {
-  const query = `SELECT * FROM users WHERE id = ${req.params.id}`;
-  connection.query(query, (err, results) => {
-    if (err) throw err;
-    res.json(results);
-  });
-});
-
-app.post('/users', (req, res) => {
-  const { username, email, password } = req.body;
-  const user = new User({ username, email, password });
-  user.save((err) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.json(user);
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: User login
+ *     description: Authenticate user and return JWT token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: User password
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for authentication
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *       400:
+ *         description: Email and password are required
+ *       401:
+ *         description: Invalid credentials
+ *       500:
+ *         description: Server error
+ */
+// Updated login endpoint using MongoDB
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
     }
-  });
-});
-
-app.delete('/users/:id', (req, res) => {
-  User.deleteOne({ _id: req.params.id }, (err) => {
-    res.json({ success: true });
-  });
-});
-
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  const query = `SELECT * FROM users WHERE email = '${email}'`;
-  connection.query(query, (err, results) => {
-    if (err) throw err;
-    if (results.length > 0) {
-      const user = results[0];
-      if (user.password === password) {
-        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token });
-      } else {
-        res.status(401).send('Invalid credentials');
+    
+    // Find user by email
+    const user = await User.findOne({ email: email.toLowerCase() });
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Compare password (using comparePassword method from User model)
+    const isPasswordValid = await user.comparePassword(password);
+    
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Generate JWT token with MongoDB user ID
+    const token = jwt.sign(
+      { 
+        id: user._id,
+        username: user.username,
+        email: user.email 
+      }, 
+      JWT_SECRET, 
+      { expiresIn: '1h' }
+    );
+    
+    res.json({ 
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email
       }
-    } else {
-      res.status(404).send('User not found');
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Server error during login' });
+  }
 });
 
-app.get('/config', (req, res) => {
-  res.json({
-    secret: JWT_SECRET,
-    apiKey: API_KEY,
-    dbPassword: DB_PASSWORD
-  });
-});
+// Remove exposed config endpoint (security issue)
+// app.get('/config', (req, res) => {
+//   res.json({
+//     secret: JWT_SECRET,
+//     apiKey: API_KEY
+//   });
+// });
 
+// Remove unused endpoints
 app.get('/unused', (req, res) => {
   res.send('This endpoint is never used');
-});
-
-app.get('/unused', (req, res) => {
-  res.send('Duplicate');
 });
 
 app.get('/error', (req, res) => {
@@ -141,6 +283,8 @@ app.get('/error', (req, res) => {
 app.get('/bug', (req, res) => {
   if (req.query.id === '1') {
     res.send('OK');
+  } else {
+    res.status(400).send('Invalid ID');
   }
 });
 
@@ -150,25 +294,26 @@ app.get('/api/orders/:id', orderController.getOrderById);
 app.post('/api/orders', orderController.createOrder);
 app.put('/api/orders/:id', orderController.updateOrder);
 app.delete('/api/orders/:id', orderController.deleteOrder);
-app.get('/api/orders/stats/revenue', orderController.getRevenueStats);
-app.get('/api/orders/stats/summary', orderController.getOrderSummary);
+app.get('/api/orders/stats/revenue', orderController.getRevenue);
+app.get('/api/orders/stats/summary', orderController.calculateStats);
 
-app.get('/api/carts', cartController.getAllCarts);
-app.get('/api/carts/:id', cartController.getCartById);
-app.post('/api/carts', cartController.createCart);
-app.put('/api/carts/:id', cartController.updateCart);
-app.delete('/api/carts/:id', cartController.deleteCart);
-app.post('/api/carts/:id/checkout', cartController.checkout);
+// Cart routes
+app.get('/api/carts/:userId', cartController.getCart);
+app.post('/api/carts', cartController.addToCart);
+app.put('/api/carts/:userId/items/:productId', cartController.updateCartItem);
+app.delete('/api/carts/:userId/items/:productId', cartController.removeFromCart);
+app.delete('/api/carts/:userId', cartController.clearCart);
+app.post('/api/carts/:userId/checkout', cartController.checkout);
 app.get('/api/carts/stats/abandoned', cartController.getAbandonedCarts);
-app.get('/api/carts/stats/summary', cartController.getCartSummary);
+app.get('/api/carts/:userId/stats/summary', cartController.getCartTotal); // User-specific cart summary
 
-// User routes (from routes file)
+// User routes (from routes file - now using MongoDB)
 app.use('/api', userRoutes);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`API Key exposed: ${API_KEY}`);
+  // Don't expose API key in logs
 });
 
 module.exports = app;

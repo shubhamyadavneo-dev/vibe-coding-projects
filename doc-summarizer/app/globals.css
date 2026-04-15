@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --background: 250 100% 99%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --primary: 252 100% 67%;
+  --primary-foreground: 210 40% 98%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 9% 46%;
+  --border: 220 13% 88%;
+  --ring: 252 100% 67%;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-border: hsl(var(--border));
+  --color-ring: hsl(var(--ring));
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+.dark {
+  --background: 222 47% 8%;
+  --foreground: 210 40% 98%;
+  --card: 224 44% 11%;
+  --card-foreground: 210 40% 98%;
+  --primary: 252 100% 72%;
+  --primary-foreground: 222 47% 10%;
+  --muted: 223 28% 16%;
+  --muted-foreground: 217 11% 72%;
+  --border: 222 29% 20%;
+  --ring: 252 100% 72%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  color: hsl(var(--foreground));
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top left, hsl(253 100% 85% / 0.45), transparent 45%),
+    radial-gradient(circle at bottom right, hsl(196 100% 80% / 0.4), transparent 40%),
+    hsl(var(--background));
+}

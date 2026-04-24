@@ -6,6 +6,7 @@ export const useDragAndDrop = () => {
 
   const handleDragEnd = useCallback(async (event) => {
     const { active, over } = event;
+    console.log({currentBoard});
 
     if (!over || !currentBoard) return;
 
@@ -30,7 +31,7 @@ export const useDragAndDrop = () => {
       const activeIndex = sourceTasks.findIndex((task) => task._id === activeTaskId);
       const overIndex = destinationTasks.findIndex((task) => task._id === overTaskId);
       if (activeIndex < 0 || overIndex < 0) return;
-
+    
       // If dragging within the same column
       if (activeStatus === overStatus) {
         if (activeIndex === overIndex) return;
@@ -41,7 +42,7 @@ export const useDragAndDrop = () => {
           destinationStatus: overStatus,
           sourceIndex: activeIndex,
           destinationIndex: overIndex,
-          boardId: currentBoard._id
+          boardId: currentBoard?.board?._id
         });
       } else {
         // Dragging to a different column
@@ -51,7 +52,7 @@ export const useDragAndDrop = () => {
           destinationStatus: overStatus,
           sourceIndex: activeIndex,
           destinationIndex: overIndex,
-          boardId: currentBoard._id
+          boardId: currentBoard?.board?._id
         });
       }
     }
@@ -77,7 +78,7 @@ export const useDragAndDrop = () => {
         destinationStatus: overColumnId,
         sourceIndex: activeIndex,
         destinationIndex: destinationTasks.length,
-        boardId: currentBoard._id
+        boardId: currentBoard?.board?._id
       });
     }
   }, [reorderTasks, currentBoard, tasks, getTasksByStatus]);

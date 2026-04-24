@@ -41,6 +41,8 @@ export const KanbanProvider = ({ children }) => {
     setError(null);
     try {
       const board = await boardService.getById(boardId);
+      console.log({board});
+      
       const boardTasks = await taskService.getByBoardId(boardId);
       
       setCurrentBoard(board);
@@ -225,6 +227,11 @@ export const KanbanProvider = ({ children }) => {
       .sort((a, b) => a.position - b.position);
   }, [tasks]);
 
+  const clearCurrentBoard = useCallback(() => {
+    setCurrentBoard(null);
+    setTasks([]);
+  }, []);
+
   const value = {
     boards,
     currentBoard,
@@ -246,6 +253,7 @@ export const KanbanProvider = ({ children }) => {
     deleteTaskComment,
     getTasksByStatus,
     setCurrentBoard,
+    clearCurrentBoard,
     clearError: () => setError(null)
   };
 

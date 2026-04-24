@@ -296,7 +296,7 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
               )}
             </section>
 
-            <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+            {/* <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-slate-900">History</h3>
                 <p className="text-sm text-slate-500">Tracks assignee updates and comment activity over time.</p>
@@ -331,7 +331,7 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
                   </article>
                 ))}
               </div>
-            </section>
+            </section> */}
           </div>
         </div>
       </div>

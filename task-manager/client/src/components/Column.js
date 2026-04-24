@@ -40,7 +40,7 @@ const Column = ({
   return (
     <div
       ref={setNodeRef}
-      className={`flex-shrink-0 w-full sm:w-80 rounded-xl border ${getStatusColor()} ${isOver ? 'ring-2 ring-blue-400' : ''} shadow-sm hover:shadow-md transition-shadow duration-200`}
+      className={`flex-shrink-0 w-full sm:w-96 rounded-xl border ${getStatusColor()} ${isOver ? 'ring-2 ring-blue-400' : ''} shadow-sm hover:shadow-md transition-shadow duration-200`}
     >
       <div className={`rounded-t-xl p-4 ${getHeaderColor()} text-white`}>
         <div className="flex justify-between items-center">

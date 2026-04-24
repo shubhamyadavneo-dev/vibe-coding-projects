@@ -3,20 +3,21 @@ import { useKanban } from '../context/KanbanContext';
 import BoardForm from './BoardForm';
 
 const BoardSelector = ({ onBoardSelect }) => {
-  const { 
-    boards, 
-    currentBoard, 
-    fetchBoards, 
-    fetchBoard, 
-    createBoard, 
+  const {
+    boards,
+    currentBoard,
+    fetchBoards,
+    fetchBoard,
+    createBoard,
     deleteBoard,
     loading,
     error,
-    clearError 
+    clearError
   } = useKanban();
-  
+
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
+  const [detailsBoard, setDetailsBoard] = useState(null);
 
   const loadBoards = useCallback(async () => {
     try {
@@ -32,10 +33,10 @@ const BoardSelector = ({ onBoardSelect }) => {
 
   const handleSelectBoard = async (boardId) => {
     setLocalLoading(true);
-    try {
+    try {      
       await fetchBoard(boardId);
       if (onBoardSelect) {
-        onBoardSelect();
+        onBoardSelect(boardId);
       }
     } catch (err) {
       console.error('Failed to load board:', err);
@@ -46,12 +47,9 @@ const BoardSelector = ({ onBoardSelect }) => {
 
   const handleCreateBoard = async (boardData) => {
     try {
-      const newBoard = await createBoard(boardData);
+      await createBoard(boardData);
       setShowCreateForm(false);
-      await fetchBoard(newBoard._id);
-      if (onBoardSelect) {
-        onBoardSelect();
-      }
+      await loadBoards();
     } catch (err) {
       console.error('Failed to create board:', err);
     }
@@ -72,7 +70,10 @@ const BoardSelector = ({ onBoardSelect }) => {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Select a Board</h2>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Boards Dashboard</h2>
+          <p className="mt-1 text-sm text-gray-500">Choose a board to open and manage its tasks.</p>
+        </div>
         <button
           onClick={() => setShowCreateForm(true)}
           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -114,12 +115,10 @@ const BoardSelector = ({ onBoardSelect }) => {
         {boards.map((board) => (
           <div
             key={board._id}
-            onClick={() => handleSelectBoard(board._id)}
-            className={`cursor-pointer rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md ${
-              currentBoard && currentBoard._id === board._id
+            className={`rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md ${currentBoard && currentBoard._id === board._id
                 ? 'border-blue-500 bg-blue-50'
                 : 'border-slate-200 bg-white'
-            }`}
+              }`}
           >
             <div className="flex justify-between items-start">
               <div>
@@ -134,7 +133,7 @@ const BoardSelector = ({ onBoardSelect }) => {
                 ×
               </button>
             </div>
-            
+
             <div className="mt-4 flex items-center text-sm text-gray-500">
               <span className="mr-4">
                 Columns: {board.columns?.length || 3}
@@ -143,15 +142,91 @@ const BoardSelector = ({ onBoardSelect }) => {
                 Created: {new Date(board.createdAt).toLocaleDateString()}
               </span>
             </div>
-            
-            {currentBoard && currentBoard._id === board._id && (
-              <div className="mt-3 text-sm text-blue-600 font-medium">
-                ✓ Currently selected
+
+            <div className="mt-4 flex items-center justify-between gap-3">
+              {currentBoard && currentBoard._id === board._id ? (
+                <div className="text-sm text-blue-600 font-medium">
+                  Active board
+                </div>
+              ) : (
+                <div className="text-sm text-slate-500">
+                  View details or open
+                </div>
+              )}
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDetailsBoard(board)}
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                >
+                  View Details
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectBoard(board._id)}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${currentBoard && currentBoard._id === board._id
+                      ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                      : 'bg-primary-600 text-white hover:bg-primary-700'
+                    }`}
+                >
+                  {currentBoard && currentBoard._id === board._id ? 'Open Board' : 'Open Board'}
+                </button>
               </div>
-            )}
+            </div>
           </div>
         ))}
       </div>
+
+      {detailsBoard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900">{detailsBoard.name}</h3>
+                <p className="mt-2 text-sm text-slate-600">{detailsBoard.description || 'No description available.'}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDetailsBoard(null)}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+              <p><span className="font-semibold text-slate-800">Columns:</span> {detailsBoard.columns?.join(', ') || 'Todo, In Progress, Done'}</p>
+              <p><span className="font-semibold text-slate-800">Created:</span> {new Date(detailsBoard.createdAt).toLocaleDateString()}</p>
+              {currentBoard && currentBoard._id === detailsBoard._id && (
+                <p className="font-medium text-blue-600">This board is currently active.</p>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setDetailsBoard(null)}
+                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setDetailsBoard(null);
+                  console.log("Details board::", detailsBoard);
+
+                  await handleSelectBoard(detailsBoard._id);
+                }}
+                className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+              >
+                Open Board
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showCreateForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">

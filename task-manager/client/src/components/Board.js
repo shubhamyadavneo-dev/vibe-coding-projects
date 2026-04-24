@@ -3,15 +3,15 @@ import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor,
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import Column from './Column';
 import TaskForm from './TaskForm';
-import BoardForm from './BoardForm';
+import ModalPortal from './ModalPortal';
 import { useKanban } from '../context/KanbanContext';
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
 import { useAuth } from '../context/AuthContext';
 
-const Board = () => {
-  const { 
-    currentBoard, 
-    tasks, 
+const Board = ({ onBoardDeleted }) => {
+  const {
+    currentBoard,
+    tasks,
     getTasksByStatus,
     createTask,
     fetchUsers,
@@ -20,10 +20,8 @@ const Board = () => {
     deleteTaskComment,
     updateTask,
     deleteTask,
-    updateBoard,
-    deleteBoard,
     loading,
-    error 
+    error
   } = useKanban();
   const { user: currentUser } = useAuth();
   
@@ -31,7 +29,6 @@ const Board = () => {
   const [activeTask, setActiveTask] = useState(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [showBoardForm, setShowBoardForm] = useState(false);
   const [taskStatus, setTaskStatus] = useState('Todo');
 
   useEffect(() => {
@@ -90,17 +87,6 @@ const Board = () => {
     setEditingTask(null);
   };
 
-  const handleSaveBoard = async (boardData) => {
-    await updateBoard(currentBoard._id, boardData);
-    setShowBoardForm(false);
-  };
-
-  const handleDeleteBoard = async () => {
-    if (window.confirm('Are you sure you want to delete this board? All tasks will be deleted.')) {
-      await deleteBoard(currentBoard._id);
-    }
-  };
-
   if (!currentBoard) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -115,7 +101,7 @@ const Board = () => {
   const columns = currentBoard.columns || ['Todo', 'In Progress', 'Done'];
 
   return (
-    <div className="p-3 sm:p-6">
+    <div className="p-3 sm:p-6 min-h-[90dvh]">
       {error && (
         <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
           <p>{error}</p>
@@ -124,24 +110,10 @@ const Board = () => {
 
       {/* Board Header */}
       <div className="mb-8">
-        <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="mb-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">{currentBoard.name}</h1>
             <p className="text-gray-600 mt-1">{currentBoard.description}</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => setShowBoardForm(true)}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              Edit Board
-            </button>
-            <button
-              onClick={handleDeleteBoard}
-              className="px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-danger-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              Delete Board
-            </button>
           </div>
         </div>
         
@@ -163,7 +135,7 @@ const Board = () => {
         }}
         onDragCancel={() => setActiveTask(null)}
       >
-        <div className="flex gap-4 overflow-x-auto pb-4 sm:gap-6">
+        <div className="flex gap-6 overflow-x-auto pb-4">
           {columns.map((column) => (
             <Column
               key={column}
@@ -189,44 +161,33 @@ const Board = () => {
 
       {/* Task Form Modal */}
       {showTaskForm && (
-        <div className="modal-backdrop items-start overflow-y-auto py-8 md:items-center">
-          <div className="w-full max-w-6xl rounded-[32px] border border-slate-200 bg-white shadow-2xl">
-            <TaskForm
-              task={editingTask}
-              onSave={handleSaveTask}
-              onAddComment={async (taskId, body) => {
-                const updatedTask = await addTaskComment(taskId, body);
-                setEditingTask(updatedTask);
-                return updatedTask;
-              }}
-              onDeleteComment={async (taskId, commentId) => {
-                const updatedTask = await deleteTaskComment(taskId, commentId);
-                setEditingTask(updatedTask);
-                return updatedTask;
-              }}
-              currentUserId={currentUser?._id}
-              onCancel={() => {
-                setShowTaskForm(false);
-                setEditingTask(null);
-              }}
-              status={taskStatus}
-              users={users}
-            />
+        <ModalPortal>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/55 p-4">
+            <div className="my-auto w-full max-w-6xl rounded-[32px] border border-slate-200 bg-white shadow-2xl">
+              <TaskForm
+                task={editingTask}
+                onSave={handleSaveTask}
+                onAddComment={async (taskId, body) => {
+                  const updatedTask = await addTaskComment(taskId, body);
+                  setEditingTask(updatedTask);
+                  return updatedTask;
+                }}
+                onDeleteComment={async (taskId, commentId) => {
+                  const updatedTask = await deleteTaskComment(taskId, commentId);
+                  setEditingTask(updatedTask);
+                  return updatedTask;
+                }}
+                currentUserId={currentUser?._id}
+                onCancel={() => {
+                  setShowTaskForm(false);
+                  setEditingTask(null);
+                }}
+                status={taskStatus}
+                users={users}
+              />
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Board Form Modal */}
-      {showBoardForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
-            <BoardForm
-              board={currentBoard}
-              onSave={handleSaveBoard}
-              onCancel={() => setShowBoardForm(false)}
-            />
-          </div>
-        </div>
+        </ModalPortal>
       )}
 
       {loading && (

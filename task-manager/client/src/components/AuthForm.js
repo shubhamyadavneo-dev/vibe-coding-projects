@@ -43,17 +43,17 @@ const AuthForm = () => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           {isRegisterMode && (
             <div>
-              <label className="label">Full name</label>
-              <input className="input" name="name" value={formData.name} onChange={handleChange} required />
+              <label className="label" htmlFor="auth-name">Full name</label>
+              <input id="auth-name" className="input" name="name" value={formData.name} onChange={handleChange} required />
             </div>
           )}
           <div>
-            <label className="label">Email</label>
-            <input className="input" type="email" name="email" value={formData.email} onChange={handleChange} required />
+            <label className="label" htmlFor="auth-email">Email</label>
+            <input id="auth-email" className="input" type="email" name="email" value={formData.email} onChange={handleChange} required />
           </div>
           <div>
-            <label className="label">Password</label>
-            <input className="input" type="password" name="password" value={formData.password} onChange={handleChange} required minLength={6} />
+            <label className="label" htmlFor="auth-password">Password</label>
+            <input id="auth-password" className="input" type="password" name="password" value={formData.password} onChange={handleChange} required minLength={6} />
           </div>
           <button className="btn-primary w-full" disabled={submitting} type="submit">
             {submitting ? 'Please wait...' : isRegisterMode ? 'Create account' : 'Sign in'}

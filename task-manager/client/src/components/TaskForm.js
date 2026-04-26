@@ -24,7 +24,7 @@ const getPriorityTone = (priority) => {
   }
 };
 
-const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, status, users, currentUserId }) => {
+const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, status, users, currentUserId, columns }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -75,6 +75,7 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
     }
     onSave({
       ...formData,
+      title: formData.title.trim(),
       assignee: formData.assignee || null
     });
   };
@@ -94,6 +95,13 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
 
     return [...task.comments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [task]);
+
+  const availableStatuses = useMemo(() => {
+    if (Array.isArray(columns) && columns.length > 0) {
+      return columns;
+    }
+    return ['Todo', 'In Progress', 'Done'];
+  }, [columns]);
 
   const handleSaveComment = async () => {
     if (!task?._id || !commentDraft.trim()) {
@@ -171,9 +179,11 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
                 onChange={handleChange}
                 className="input rounded-2xl px-4 py-3"
               >
-                <option value="Todo">Todo</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Done">Done</option>
+                {availableStatuses.map((nextStatus) => (
+                  <option key={nextStatus} value={nextStatus}>
+                    {nextStatus}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -189,34 +199,6 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
               </select>
-            </div>
-            <div>
-              <label className="label">Estimated Hours</label>
-              <input
-                type="number"
-                name="estimatedHours"
-                value={formData.estimatedHours}
-                onChange={handleChange}
-                className="input rounded-2xl px-4 py-3"
-                placeholder="0"
-                min="0"
-                max="1000"
-                step="0.5"
-              />
-            </div>
-            <div>
-              <label className="label">Actual Hours</label>
-              <input
-                type="number"
-                name="actualHours"
-                value={formData.actualHours}
-                onChange={handleChange}
-                className="input rounded-2xl px-4 py-3"
-                placeholder="0"
-                min="0"
-                max="1000"
-                step="0.5"
-              />
             </div>
 
             <div className="md:col-span-2">
@@ -328,6 +310,44 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
                   Save the ticket first, then comments can be added here.
                 </p>
               )}
+            </section>
+
+            <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-slate-900">Time</h3>
+                <p className="text-sm text-slate-500">Capture estimates and actuals without leaving the ticket panel.</p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="label">Estimated Hours</label>
+                  <input
+                    type="number"
+                    name="estimatedHours"
+                    value={formData.estimatedHours}
+                    onChange={handleChange}
+                    className="input rounded-2xl px-4 py-3"
+                    placeholder="0"
+                    min="0"
+                    max="1000"
+                    step="0.5"
+                  />
+                </div>
+                <div>
+                  <label className="label">Actual Hours</label>
+                  <input
+                    type="number"
+                    name="actualHours"
+                    value={formData.actualHours}
+                    onChange={handleChange}
+                    className="input rounded-2xl px-4 py-3"
+                    placeholder="0"
+                    min="0"
+                    max="1000"
+                    step="0.5"
+                  />
+                </div>
+              </div>
             </section>
 
             {/* <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">

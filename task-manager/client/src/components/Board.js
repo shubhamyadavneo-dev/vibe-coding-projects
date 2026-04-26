@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import Column from './Column';
@@ -12,25 +12,28 @@ const Board = ({ onBoardDeleted }) => {
   const {
     currentBoard,
     tasks,
-    getTasksByStatus,
     createTask,
     fetchUsers,
     users,
     addTaskComment,
     deleteTaskComment,
+    updateBoard,
+    setCurrentBoard,
     updateTask,
     deleteTask,
     loading,
     error
   } = useKanban();
   const { user: currentUser } = useAuth();
-  
+
   const { handleDragEnd } = useDragAndDrop();
   const [activeTask, setActiveTask] = useState(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [taskStatus, setTaskStatus] = useState('Todo');
-  
+  const [showColumnManager, setShowColumnManager] = useState(false);
+  const [columnDraft, setColumnDraft] = useState([]);
+
   // Filter states
   const [filters, setFilters] = useState({
     assignedUser: '',
@@ -40,7 +43,7 @@ const Board = ({ onBoardDeleted }) => {
   });
 
   useEffect(() => {
-    fetchUsers().catch(() => {});
+    fetchUsers().catch(() => { });
   }, [fetchUsers]);
 
   useEffect(() => {
@@ -86,14 +89,31 @@ const Board = ({ onBoardDeleted }) => {
     if (editingTask) {
       await updateTask(editingTask._id, taskData);
     } else {
+      const resolvedBoardId = taskData?.boardId || currentBoard?.board?._id || currentBoard?.id;
+      console.log("create task", taskData, resolvedBoardId);
+      console.log("currentBaord::", currentBoard);
+
       await createTask({
         ...taskData,
-        boardId: currentBoard._id
+        boardId: resolvedBoardId
       });
     }
     setShowTaskForm(false);
     setEditingTask(null);
   };
+
+  const columns = useMemo(() => {
+    if (Array.isArray(currentBoard?.columns) && currentBoard.columns.length > 0) {
+      return currentBoard.columns;
+    }
+    return ['Todo', 'In Progress', 'Done'];
+  }, [currentBoard]);
+
+  useEffect(() => {
+    if (showColumnManager) {
+      setColumnDraft(columns);
+    }
+  }, [columns, showColumnManager]);
 
   if (!currentBoard) {
     return (
@@ -105,8 +125,6 @@ const Board = ({ onBoardDeleted }) => {
       </div>
     );
   }
-
-  const columns = currentBoard.columns || ['Todo', 'In Progress', 'Done'];
 
   // Filter tasks based on current filters
   const getFilteredTasks = () => {
@@ -164,12 +182,23 @@ const Board = ({ onBoardDeleted }) => {
       {/* Board Header */}
       <div className="mb-8">
         <div className="mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">{currentBoard.name}</h1>
-            <p className="text-gray-600 mt-1">{currentBoard.description}</p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">{currentBoard.name}</h1>
+              <p className="text-gray-600 mt-1">{currentBoard.description}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setShowColumnManager(true)}
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                Reorder columns
+              </button>
+            </div>
           </div>
         </div>
-        
+
         <div className="flex flex-col gap-1 text-gray-600 sm:flex-row sm:items-center">
           <span className="mr-0 sm:mr-4">Columns: {columns.join(', ')}</span>
           <span className="text-sm">Total Tasks: {filteredTasks.length} {tasks.length !== filteredTasks.length && `(filtered from ${tasks.length})`}</span>
@@ -324,7 +353,93 @@ const Board = ({ onBoardDeleted }) => {
                 }}
                 status={taskStatus}
                 users={users}
+                columns={columns}
               />
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {/* Column sequence modal */}
+      {showColumnManager && (
+        <ModalPortal>
+          <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/55 p-4">
+            <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+              <div className="mb-4 flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">Column sequence</h3>
+                  <p className="mt-1 text-sm text-slate-600">Move statuses up/down to control the board flow.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowColumnManager(false)}
+                  className="text-slate-400 hover:text-slate-700"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {columnDraft.map((col, idx) => (
+                  <div key={col} className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                    <div className="min-w-0">
+                      <div className="truncate font-semibold text-slate-900">{col}</div>
+                      <div className="text-xs text-slate-500">Status {idx + 1}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={idx === 0}
+                        onClick={() => {
+                          setColumnDraft((prev) => {
+                            const next = [...prev];
+                            [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+                            return next;
+                          });
+                        }}
+                      >
+                        Up
+                      </button>
+                      <button
+                        type="button"
+                        className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={idx === columnDraft.length - 1}
+                        onClick={() => {
+                          setColumnDraft((prev) => {
+                            const next = [...prev];
+                            [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+                            return next;
+                          });
+                        }}
+                      >
+                        Down
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowColumnManager(false)}
+                  className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const updated = await updateBoard(currentBoard._id, { columns: columnDraft });
+                    setCurrentBoard(updated);
+                    setShowColumnManager(false);
+                  }}
+                  className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
+                >
+                  Save sequence
+                </button>
+              </div>
             </div>
           </div>
         </ModalPortal>

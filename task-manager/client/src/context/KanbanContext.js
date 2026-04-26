@@ -40,11 +40,14 @@ export const KanbanProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const board = await boardService.getById(boardId);
-      console.log({board});
-      
-      const boardTasks = await taskService.getByBoardId(boardId);
-      
+      const boardResponse = await boardService.getById(boardId);
+      // `/boards/:id` returns `{ board, tasks }`
+      const board = boardResponse?.board || boardResponse;
+
+      const boardTasks = Array.isArray(boardResponse?.tasks)
+        ? boardResponse.tasks
+        : await taskService.getByBoardId(boardId);
+
       setCurrentBoard(board);
       setTasks(boardTasks);
       return { board, tasks: boardTasks };

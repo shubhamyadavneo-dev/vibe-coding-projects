@@ -2,8 +2,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+// Get JWT secret with validation for production
+const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret && process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET environment variable is required in production');
+  }
+  return secret || 'dev-secret';
+};
+
 const buildToken = (userId) =>
-  jwt.sign({ userId }, process.env.JWT_SECRET || 'dev-secret', { expiresIn: '7d' });
+  jwt.sign({ userId }, getJwtSecret(), { expiresIn: '7d' });
 
 const sanitizeUser = (userDoc) => ({
   _id: userDoc._id,
@@ -64,4 +73,20 @@ exports.login = async (req, res) => {
 
 exports.me = async (req, res) => {
   return res.json({ user: req.user });
+};
+
+/**
+ * Logout endpoint
+ * @route POST /api/auth/logout
+ * @access Private
+ */
+exports.logout = async (req, res) => {
+  try {
+    // In a stateless JWT system, we can't invalidate the token server-side
+    // without implementing a token blacklist. For now, we just return success
+    // and the client should remove the token from storage.
+    return res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to logout' });
+  }
 };

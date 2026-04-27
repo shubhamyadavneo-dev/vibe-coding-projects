@@ -12,7 +12,7 @@ const boardSchema = new mongoose.Schema({
   },
   columns: {
     type: [String],
-    default: ['Todo', 'In Progress', 'Done']
+    default: ['Backlog', 'Analysis', 'Ready', 'Development', 'Review', 'Testing', 'Staging', 'Done']
   },
   createdAt: {
     type: Date,

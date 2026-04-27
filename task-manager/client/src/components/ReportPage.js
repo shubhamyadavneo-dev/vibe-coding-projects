@@ -225,8 +225,13 @@ const ReportPage = () => {
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="">All statuses</option>
-                <option value="Todo">Todo</option>
-                <option value="In Progress">In Progress</option>
+                <option value="Backlog">Backlog</option>
+                <option value="Analysis">Analysis</option>
+                <option value="Ready">Ready</option>
+                <option value="Development">Development</option>
+                <option value="Review">Review</option>
+                <option value="Testing">Testing</option>
+                <option value="Staging">Staging</option>
                 <option value="Done">Done</option>
               </select>
             </div>

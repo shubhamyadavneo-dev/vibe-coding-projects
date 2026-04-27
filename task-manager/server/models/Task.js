@@ -4,7 +4,8 @@ const taskSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    maxlength: 255
   },
   description: {
     type: String,
@@ -13,8 +14,8 @@ const taskSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['Todo', 'In Progress', 'Done'],
-    default: 'Todo'
+    enum: ['Backlog', 'Analysis', 'Ready', 'Development', 'Review', 'Testing', 'Staging', 'Done'],
+    default: 'Backlog'
   },
   priority: {
     type: String,

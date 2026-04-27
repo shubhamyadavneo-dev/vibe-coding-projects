@@ -90,43 +90,6 @@ const getWorklogsByUser = async (req, res) => {
 };
 
 /**
- * Update a worklog entry
- * @route PUT /api/worklogs/:id
- * @access Private
- */
-const updateWorklog = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { hours, description, date } = req.body;
-    const userId = req.user._id;
-
-    // Find worklog
-    const worklog = await Worklog.findById(id);
-    if (!worklog) {
-      return res.status(404).json({ error: 'Worklog not found' });
-    }
-
-    // Check ownership
-    if (worklog.userId.toString() !== userId.toString()) {
-      return res.status(403).json({ error: 'Not authorized to update this worklog' });
-    }
-
-    // Update fields
-    if (hours !== undefined) worklog.hours = parseFloat(hours);
-    if (description !== undefined) worklog.description = description;
-    if (date !== undefined) worklog.date = new Date(date);
-
-    await worklog.save();
-    await worklog.populate('userId', 'name email');
-
-    res.json(worklog);
-  } catch (error) {
-    console.error('Error in updateWorklog:', error);
-    res.status(500).json({ error: error.message || 'Failed to update worklog' });
-  }
-};
-
-/**
  * Delete a worklog entry
  * @route DELETE /api/worklogs/:id
  * @access Private
@@ -159,6 +122,5 @@ module.exports = {
   createWorklog,
   getWorklogsByTask,
   getWorklogsByUser,
-  updateWorklog,
   deleteWorklog
 };

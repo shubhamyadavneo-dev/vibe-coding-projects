@@ -76,7 +76,7 @@ class TaskService {
       const task = new this.Task({
         title,
         description: description || '',
-        status: status || 'Todo',
+        status: status || 'Backlog',
         priority: priority || 'Medium',
         boardId,
         assignee: assignee || null,

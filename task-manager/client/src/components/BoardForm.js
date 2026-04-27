@@ -4,7 +4,7 @@ const BoardForm = ({ board, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    columns: ['Todo', 'In Progress', 'Done']
+    columns: ['Backlog', 'Analysis', 'Ready', 'Development', 'Review', 'Testing', 'Staging', 'Done']
   });
 
   const [newColumn, setNewColumn] = useState('');
@@ -14,7 +14,7 @@ const BoardForm = ({ board, onSave, onCancel }) => {
       setFormData({
         name: board.name || '',
         description: board.description || '',
-        columns: board.columns || ['Todo', 'In Progress', 'Done']
+        columns: board.columns || ['Backlog', 'Analysis', 'Ready', 'Development', 'Review', 'Testing', 'Staging', 'Done']
       });
     }
   }, [board]);
@@ -134,7 +134,7 @@ const BoardForm = ({ board, onSave, onCancel }) => {
           </button>
         </div>
         <p className="text-sm text-gray-500 mt-1">
-          Add custom columns for your board. Default columns are Todo, In Progress, Done.
+          Add custom columns for your board. Default columns are Backlog, Analysis, Ready, Development, Review, Testing, Staging, Done.
         </p>
       </div>
 

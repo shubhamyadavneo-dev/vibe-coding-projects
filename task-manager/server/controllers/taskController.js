@@ -72,7 +72,7 @@ exports.createTask = async (req, res) => {
     const task = new Task({
       title,
       description: description || '',
-      status: status || 'Todo',
+      status: status || 'Backlog',
       priority: priority || 'medium',
       assignee: assignee || null,
       boardId,

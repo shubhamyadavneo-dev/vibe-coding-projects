@@ -21,8 +21,13 @@ const Column = ({
 
   const getStatusColor = () => {
     switch (status) {
-      case 'Todo': return 'bg-blue-50 border-blue-200 dark:bg-slate-900/60 dark:border-slate-800';
-      case 'In Progress': return 'bg-yellow-50 border-yellow-200 dark:bg-slate-900/60 dark:border-slate-800';
+      case 'Backlog': return 'bg-purple-50 border-purple-200 dark:bg-slate-900/60 dark:border-slate-800';
+      case 'Analysis': return 'bg-indigo-50 border-indigo-200 dark:bg-slate-900/60 dark:border-slate-800';
+      case 'Ready': return 'bg-blue-50 border-blue-200 dark:bg-slate-900/60 dark:border-slate-800';
+      case 'Development': return 'bg-cyan-50 border-cyan-200 dark:bg-slate-900/60 dark:border-slate-800';
+      case 'Review': return 'bg-amber-50 border-amber-200 dark:bg-slate-900/60 dark:border-slate-800';
+      case 'Testing': return 'bg-orange-50 border-orange-200 dark:bg-slate-900/60 dark:border-slate-800';
+      case 'Staging': return 'bg-red-50 border-red-200 dark:bg-slate-900/60 dark:border-slate-800';
       case 'Done': return 'bg-green-50 border-green-200 dark:bg-slate-900/60 dark:border-slate-800';
       default: return 'bg-gray-50 border-gray-200 dark:bg-slate-900/60 dark:border-slate-800';
     }
@@ -30,8 +35,13 @@ const Column = ({
 
   const getHeaderColor = () => {
     switch (status) {
-      case 'Todo': return 'bg-blue-500';
-      case 'In Progress': return 'bg-yellow-500';
+      case 'Backlog': return 'bg-purple-500';
+      case 'Analysis': return 'bg-indigo-500';
+      case 'Ready': return 'bg-blue-500';
+      case 'Development': return 'bg-cyan-500';
+      case 'Review': return 'bg-amber-500';
+      case 'Testing': return 'bg-orange-500';
+      case 'Staging': return 'bg-red-500';
       case 'Done': return 'bg-green-500';
       default: return 'bg-gray-500';
     }

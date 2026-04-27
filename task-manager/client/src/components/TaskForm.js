@@ -29,7 +29,7 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
     title: '',
     description: '',
     priority: 'medium',
-    status: status || 'Todo',
+    status: status || 'Backlog',
     assignee: '',
     estimatedHours: 0,
     actualHours: 0
@@ -43,7 +43,7 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
         title: task.title || '',
         description: task.description || '',
         priority: task.priority || 'medium',
-        status: task.status || status || 'Todo',
+        status: task.status || status || 'Backlog',
         assignee: task.assignee?._id || '',
         estimatedHours: task.estimatedHours || 0,
         actualHours: task.actualHours || 0
@@ -51,7 +51,7 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
     } else {
       setFormData(prev => ({
         ...prev,
-        status: status || 'Todo',
+        status: status || 'Backlog',
         assignee: '',
         estimatedHours: 0,
         actualHours: 0
@@ -100,7 +100,8 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
     if (Array.isArray(columns) && columns.length > 0) {
       return columns;
     }
-    return ['Todo', 'In Progress', 'Done'];
+    // Default to 8-column workflow if no columns provided
+    return ['Backlog', 'Analysis', 'Ready', 'Development', 'Review', 'Testing', 'Staging', 'Done'];
   }, [columns]);
 
   const handleSaveComment = async () => {

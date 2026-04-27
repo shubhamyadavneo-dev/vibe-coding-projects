@@ -196,7 +196,7 @@ const BoardSelector = ({ onBoardSelect }) => {
             </div>
 
             <div className="mt-6 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-              <p><span className="font-semibold text-slate-800">Columns:</span> {detailsBoard.columns?.join(', ') || 'Todo, In Progress, Done'}</p>
+              <p><span className="font-semibold text-slate-800">Columns:</span> {detailsBoard.columns?.join(', ') || 'Backlog, Analysis, Ready, Development, Review, Testing, Staging, Done'}</p>
               <p><span className="font-semibold text-slate-800">Created:</span> {new Date(detailsBoard.createdAt).toLocaleDateString()}</p>
               {currentBoard && currentBoard._id === detailsBoard._id && (
                 <p className="font-medium text-blue-600">This board is currently active.</p>

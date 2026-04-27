@@ -30,7 +30,7 @@ const Board = ({ onBoardDeleted }) => {
   const [activeTask, setActiveTask] = useState(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [taskStatus, setTaskStatus] = useState('Todo');
+  const [taskStatus, setTaskStatus] = useState('Backlog');
   const [showColumnManager, setShowColumnManager] = useState(false);
   const [columnDraft, setColumnDraft] = useState([]);
 
@@ -89,9 +89,22 @@ const Board = ({ onBoardDeleted }) => {
     if (editingTask) {
       await updateTask(editingTask._id, taskData);
     } else {
-      const resolvedBoardId = taskData?.boardId || currentBoard?.board?._id || currentBoard?.id;
-      console.log("create task", taskData, resolvedBoardId);
-      console.log("currentBaord::", currentBoard);
+      // Try multiple possible paths for boardId
+      const resolvedBoardId =
+        taskData?.boardId ||
+        currentBoard?._id ||
+        currentBoard?.board?._id ||
+        currentBoard?.id;
+      
+      console.log("Creating task with data:", taskData);
+      console.log("Current board structure:", currentBoard);
+      console.log("Resolved boardId:", resolvedBoardId);
+      
+      if (!resolvedBoardId) {
+        console.error("No boardId could be resolved!");
+        alert("Error: Could not determine board. Please select a board first.");
+        return;
+      }
 
       await createTask({
         ...taskData,
@@ -106,7 +119,7 @@ const Board = ({ onBoardDeleted }) => {
     if (Array.isArray(currentBoard?.columns) && currentBoard.columns.length > 0) {
       return currentBoard.columns;
     }
-    return ['Todo', 'In Progress', 'Done'];
+    return ['Backlog', 'Analysis', 'Ready', 'Development', 'Review', 'Testing', 'Staging', 'Done'];
   }, [currentBoard]);
 
   useEffect(() => {

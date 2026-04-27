@@ -8,6 +8,7 @@ export const useDragAndDrop = () => {
     const { active, over } = event;
     console.log({currentBoard});
 
+
     if (!over || !currentBoard) return;
 
     const activeId = active.id;
@@ -42,7 +43,7 @@ export const useDragAndDrop = () => {
           destinationStatus: overStatus,
           sourceIndex: activeIndex,
           destinationIndex: overIndex,
-          boardId: currentBoard?.board?._id
+          boardId: currentBoard?._id
         });
       } else {
         // Dragging to a different column
@@ -52,7 +53,7 @@ export const useDragAndDrop = () => {
           destinationStatus: overStatus,
           sourceIndex: activeIndex,
           destinationIndex: overIndex,
-          boardId: currentBoard?.board?._id
+          boardId: currentBoard?._id
         });
       }
     }
@@ -78,7 +79,7 @@ export const useDragAndDrop = () => {
         destinationStatus: overColumnId,
         sourceIndex: activeIndex,
         destinationIndex: destinationTasks.length,
-        boardId: currentBoard?.board?._id
+        boardId: currentBoard?._id
       });
     }
   }, [reorderTasks, currentBoard, tasks, getTasksByStatus]);

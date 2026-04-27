@@ -160,6 +160,15 @@ app.get('/', (req, res) => {
   res.json({ message: 'Kanban Board API is running' });
 });
 
+// Health check endpoint for Docker/load balancers
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

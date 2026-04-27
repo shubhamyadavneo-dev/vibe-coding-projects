@@ -15,9 +15,6 @@ router.get('/task/:taskId', worklogController.getWorklogsByTask);
 // GET /api/worklogs/user - Get worklogs for the current user
 router.get('/user', worklogController.getWorklogsByUser);
 
-// PUT /api/worklogs/:id - Update a worklog entry
-router.put('/:id', worklogController.updateWorklog);
-
 // DELETE /api/worklogs/:id - Delete a worklog entry
 router.delete('/:id', worklogController.deleteWorklog);
 

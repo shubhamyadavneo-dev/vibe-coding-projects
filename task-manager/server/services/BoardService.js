@@ -58,7 +58,7 @@ class BoardService {
       const board = new this.Board({
         name,
         description: description || '',
-        columns: columns || ['Todo', 'In Progress', 'Done']
+        columns: columns || ['Backlog', 'Analysis', 'Ready', 'Development', 'Review', 'Testing', 'Staging', 'Done']
       });
 
       const savedBoard = await board.save();

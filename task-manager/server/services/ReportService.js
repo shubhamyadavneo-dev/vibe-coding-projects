@@ -5,12 +5,51 @@ const User = require('../models/User');
 class ReportService {
   /**
    * Generate time report with task details and total hours
+   * @param {Object} filters - Optional filters for taskName, assignee, status, priority, dueDateStatus
    * @returns {Promise<Object>} Report data with rows and grand total
    */
-  static async generateTimeReport() {
+  static async generateTimeReport(filters = {}) {
     try {
-      // Aggregate tasks with their worklogs and assignee info
-      const reportData = await Task.aggregate([
+      // Build match stage for filters
+      const matchStage = {};
+      
+      if (filters.taskName) {
+        matchStage.title = { $regex: filters.taskName, $options: 'i' };
+      }
+      
+      if (filters.assignee) {
+        matchStage.assignee = filters.assignee;
+      }
+      
+      if (filters.status) {
+        matchStage.status = filters.status;
+      }
+      
+      if (filters.priority) {
+        matchStage.priority = filters.priority;
+      }
+      
+      // Handle due date status filters
+      if (filters.dueDateStatus === 'overdue') {
+        matchStage.dueDate = { $lt: new Date() };
+        matchStage.status = { $ne: 'Done' };
+      } else if (filters.dueDateStatus === 'upcoming') {
+        const today = new Date();
+        const nextWeek = new Date();
+        nextWeek.setDate(today.getDate() + 7);
+        matchStage.dueDate = { $gte: today, $lte: nextWeek };
+      } else if (filters.dueDateStatus === 'no-due-date') {
+        matchStage.dueDate = { $eq: null };
+      }
+
+      // Build aggregation pipeline
+      const pipeline = [];
+      
+      if (Object.keys(matchStage).length > 0) {
+        pipeline.push({ $match: matchStage });
+      }
+      
+      pipeline.push(
         {
           $lookup: {
             from: 'worklogs',
@@ -34,6 +73,14 @@ class ReportService {
             },
             assigneeName: {
               $arrayElemAt: ['$assigneeInfo.name', 0]
+            },
+            // Calculate if task is overdue
+            isOverdue: {
+              $and: [
+                { $ne: ['$dueDate', null] },
+                { $lt: ['$dueDate', new Date()] },
+                { $ne: ['$status', 'Done'] }
+              ]
             }
           }
         },
@@ -46,21 +93,30 @@ class ReportService {
             estimatedHours: 1,
             actualHours: 1,
             totalHours: 1,
-            boardId: 1
+            boardId: 1,
+            dueDate: 1,
+            priority: 1,
+            isOverdue: 1
           }
         },
         {
           $sort: { totalHours: -1 }
         }
-      ]);
+      );
 
-      // Calculate grand total
+      const reportData = await Task.aggregate(pipeline);
+
+      // Calculate grand total and overdue statistics
       const grandTotalHours = reportData.reduce((sum, task) => sum + task.totalHours, 0);
+      const overdueTasks = reportData.filter(task => task.isOverdue).length;
+      const tasksWithDueDate = reportData.filter(task => task.dueDate).length;
 
       return {
         rows: reportData,
         grandTotalHours,
         totalTasks: reportData.length,
+        overdueTasks,
+        tasksWithDueDate,
         generatedAt: new Date()
       };
     } catch (error) {

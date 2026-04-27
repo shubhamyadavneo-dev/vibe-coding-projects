@@ -101,14 +101,14 @@ const BoardForm = ({ board, onSave, onCancel }) => {
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Columns
         </label>
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {formData.columns.map((column, index) => (
             <div key={index} className="flex items-center justify-between rounded bg-gray-50 p-2">
-              <span className="font-medium">{column}</span>
+              <span className="font-medium truncate">{column}</span>
               <button
                 type="button"
                 onClick={() => handleRemoveColumn(column)}
-                className="text-red-600 hover:text-red-800"
+                className="text-red-600 hover:text-red-800 text-sm whitespace-nowrap"
                 disabled={formData.columns.length <= 1}
               >
                 Remove

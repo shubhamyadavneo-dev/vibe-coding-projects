@@ -41,14 +41,14 @@ class TaskService {
 
   async createTask(taskData) {
     try {
-      const { title, description, status, priority, boardId, assignee } = taskData;
+      const { title, description, status, priority, boardId, assignee, dueDate, estimatedHours, actualHours } = taskData;
       
       // Validate required fields
       if (!title || !boardId) {
-        return { 
-          success: false, 
-          error: 'Title and boardId are required', 
-          statusCode: 400 
+        return {
+          success: false,
+          error: 'Title and boardId are required',
+          statusCode: 400
         };
       }
 
@@ -72,7 +72,7 @@ class TaskService {
         .select('position');
       
       const position = highestPositionTask ? highestPositionTask.position + 1 : 0;
-
+      console.log('taskData:', taskData, 'calculated position:', position);
       const task = new this.Task({
         title,
         description: description || '',
@@ -80,7 +80,20 @@ class TaskService {
         priority: priority || 'Medium',
         boardId,
         assignee: assignee || null,
+        dueDate: dueDate || null,
+        estimatedHours: estimatedHours || 0,
+        actualHours: actualHours || 0,
         position
+      });
+
+      // Add creation activity log
+      task.activityLog.push({
+        type: 'created',
+        message: `Task created${assignee ? ' with an assignee' : ''}`,
+        actor: taskData.actor || null,
+        metadata: {
+          newAssignee: assignee || null
+        }
       });
 
       const savedTask = await task.save();
@@ -272,7 +285,7 @@ class TaskService {
   trackChanges(originalTask, newData) {
     const changes = [];
     
-    const fieldsToTrack = ['title', 'description', 'status', 'priority', 'assignee', 'dueDate'];
+    const fieldsToTrack = ['title', 'description', 'status', 'priority', 'assignee', 'dueDate', 'estimatedHours', 'actualHours'];
     
     fieldsToTrack.forEach(field => {
       if (newData[field] !== undefined && originalTask[field] !== newData[field]) {

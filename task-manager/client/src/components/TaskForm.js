@@ -32,7 +32,8 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
     status: status || 'Backlog',
     assignee: '',
     estimatedHours: 0,
-    actualHours: 0
+    actualHours: 0,
+    dueDate: ''
   });
   const [commentDraft, setCommentDraft] = useState('');
   const [isSavingComment, setIsSavingComment] = useState(false);
@@ -46,7 +47,8 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
         status: task.status || status || 'Backlog',
         assignee: task.assignee?._id || '',
         estimatedHours: task.estimatedHours || 0,
-        actualHours: task.actualHours || 0
+        actualHours: task.actualHours || 0,
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''
       });
     } else {
       setFormData(prev => ({
@@ -54,7 +56,8 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
         status: status || 'Backlog',
         assignee: '',
         estimatedHours: 0,
-        actualHours: 0
+        actualHours: 0,
+        dueDate: ''
       }));
     }
   }, [task, status]);
@@ -73,11 +76,22 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
       alert('Title is required');
       return;
     }
-    onSave({
+    
+    // Prepare data for saving
+    const saveData = {
       ...formData,
       title: formData.title.trim(),
       assignee: formData.assignee || null
-    });
+    };
+    
+    // Convert dueDate string to Date object if provided
+    if (formData.dueDate) {
+      saveData.dueDate = new Date(formData.dueDate);
+    } else {
+      saveData.dueDate = null;
+    }
+    
+    onSave(saveData);
   };
 
   const activityItems = useMemo(() => {
@@ -146,7 +160,7 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
 
       <div className="grid min-h-[60vh] grid-cols-1 lg:grid-cols-[1.5fr_1fr]">
         <form onSubmit={handleSubmit} className="border-r border-slate-200 bg-white px-6 py-6 sm:px-8">
-          {/* <div className="grid gap-5 md:grid-cols-2"> */}
+          <div className="grid gap-5 md:grid-cols-2">
             <div className="md:col-span-2">
               <label className="label">Title *</label>
               <input
@@ -218,6 +232,20 @@ const TaskForm = ({ task, onSave, onCancel, onAddComment, onDeleteComment, statu
                 ))}
               </select>
             </div>
+
+            <div className="md:col-span-2">
+              <label className="label">Due Date</label>
+              <input
+                type="date"
+                name="dueDate"
+                value={formData.dueDate}
+                onChange={handleChange}
+                className="input rounded-2xl px-4 py-3"
+                min={new Date().toISOString().split('T')[0]}
+              />
+              <p className="mt-1 text-xs text-slate-500">Set a deadline for this task. Tasks past due date will be marked as critical.</p>
+            </div>
+          </div>
 
 
           <div className="mt-8 flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-6">

@@ -7,7 +7,15 @@ const ReportService = require('../services/ReportService');
  */
 const getTimeReport = async (req, res) => {
   try {
-    const report = await ReportService.generateTimeReport();
+    const filters = {
+      taskName: req.query.taskName || '',
+      assignee: req.query.assignee || '',
+      status: req.query.status || '',
+      priority: req.query.priority || '',
+      dueDateStatus: req.query.dueDateStatus || ''
+    };
+    
+    const report = await ReportService.generateTimeReport(filters);
     res.json(report);
   } catch (error) {
     console.error('Error in getTimeReport:', error);

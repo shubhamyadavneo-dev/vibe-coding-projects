@@ -2,6 +2,7 @@ const Task = require('../models/Task');
 const Board = require('../models/Board');
 const User = require('../models/User');
 const Worklog = require('../models/Worklog');
+const TaskService = require('../services/TaskService');
 
 const taskPopulateOptions = [
   { path: 'assignee', select: '_id name email' },
@@ -46,57 +47,26 @@ exports.getTasks = async (req, res) => {
 // Create a new task
 exports.createTask = async (req, res) => {
   try {
-    const { title, description, status, priority, boardId, assignee } = req.body;
-    if (assignee) {
-      const assigneeExists = await User.exists({ _id: assignee });
-      if (!assigneeExists) {
-        return res.status(400).json({ error: 'Invalid assignee' });
-      }
-    }
-
+    const taskService = new TaskService();
     
-    if (!title || !boardId) {
-      return res.status(400).json({ error: 'Title and boardId are required' });
+    // Prepare task data including dueDate
+    const taskData = {
+      ...req.body,
+      actor: req.user?._id || null
+    };
+    
+    // Call service to create task
+    const result = await taskService.createTask(taskData);
+    
+    if (!result.success) {
+      return res.status(result.statusCode || 400).json({ error: result.error });
     }
-
-    // Verify board exists
-    const board = await Board.findById(boardId);
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
-    }
-
-    // Get the highest position for tasks in this status to place at the end
-    const lastTask = await Task.findOne({ boardId, status }).sort({ position: -1 });
-    const position = lastTask ? lastTask.position + 1 : 0;
-
-    const task = new Task({
-      title,
-      description: description || '',
-      status: status || 'Backlog',
-      priority: priority || 'medium',
-      assignee: assignee || null,
-      boardId,
-      position,
-      estimatedHours: req.body.estimatedHours || 0,
-      actualHours: req.body.actualHours || 0
-    });
-
-    task.activityLog.push({
-      type: 'created',
-      message: `Task created${assignee ? ' with an assignee' : ''}`,
-      actor: req.user?._id || null,
-      metadata: {
-        newAssignee: assignee || null
-      }
-    });
-
-    const savedTask = await task.save();
     
     // Auto-create worklog if actualHours is provided
     if (req.body.actualHours && req.body.actualHours > 0) {
       try {
         const worklog = new Worklog({
-          taskId: savedTask._id,
+          taskId: result.data._id,
           userId: req.user?._id,
           hours: parseFloat(req.body.actualHours),
           description: `Auto-logged from task creation`,
@@ -108,8 +78,7 @@ exports.createTask = async (req, res) => {
       }
     }
     
-    await savedTask.populate(taskPopulateOptions);
-    res.status(201).json(savedTask);
+    res.status(201).json(result.data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create task' });
   }
@@ -118,7 +87,7 @@ exports.createTask = async (req, res) => {
 // Update a task
 exports.updateTask = async (req, res) => {
   try {
-    const { title, description, status, priority, position, assignee, estimatedHours, actualHours } = req.body;
+    const { title, description, status, priority, position, assignee, estimatedHours, actualHours, dueDate } = req.body;
     
     const task = await Task.findById(req.params.id);
     
@@ -186,6 +155,7 @@ exports.updateTask = async (req, res) => {
     if (priority !== undefined) task.priority = priority;
     if (estimatedHours !== undefined) task.estimatedHours = estimatedHours;
     if (actualHours !== undefined) task.actualHours = actualHours;
+    if (dueDate !== undefined) task.dueDate = dueDate;
     if (assignee !== undefined) {
       if (assignee === null || assignee === '') {
         const previousAssigneeId = task.assignee ? task.assignee.toString() : null;

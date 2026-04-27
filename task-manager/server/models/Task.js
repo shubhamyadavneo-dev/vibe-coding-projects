@@ -50,6 +50,10 @@ const taskSchema = new mongoose.Schema({
     min: 0,
     max: 1000
   },
+  dueDate: {
+    type: Date,
+    default: null
+  },
   comments: [
     {
       body: {

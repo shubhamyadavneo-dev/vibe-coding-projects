@@ -9,7 +9,8 @@ const ReportPage = () => {
     taskName: '',
     assignee: '',
     status: '',
-    priority: ''
+    priority: '',
+    dueDateStatus: ''
   });
   const [pagination, setPagination] = useState({
     page: 1,
@@ -83,7 +84,8 @@ const ReportPage = () => {
       taskName: '',
       assignee: '',
       status: '',
-      priority: ''
+      priority: '',
+      dueDateStatus: ''
     });
     setPagination(prev => ({ ...prev, page: 1 }));
   };
@@ -138,7 +140,7 @@ const ReportPage = () => {
     );
   }
 
-  const { rows = [], grandTotalHours = 0, totalTasks = 0, generatedAt } = reportData || {};
+  const { rows = [], grandTotalHours = 0, totalTasks = 0, overdueTasks = 0, tasksWithDueDate = 0, generatedAt } = reportData || {};
 
   return (
     <div>
@@ -148,6 +150,16 @@ const ReportPage = () => {
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Time Report</h1>
             <p className="mt-2 text-slate-600 dark:text-slate-300">
               Track hours across all tasks. Total of {totalTasks} tasks with {grandTotalHours.toFixed(2)} hours logged.
+              {overdueTasks > 0 && (
+                <span className="ml-2 inline-flex items-center rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-medium text-rose-800 dark:bg-rose-900/40 dark:text-rose-200">
+                  {overdueTasks} overdue
+                </span>
+              )}
+              {tasksWithDueDate > 0 && (
+                <span className="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
+                  {tasksWithDueDate} with due dates
+                </span>
+              )}
             </p>
             {generatedAt && (
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -182,7 +194,7 @@ const ReportPage = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Task Name Filter */}
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Task Name</label>
@@ -250,6 +262,21 @@ const ReportPage = () => {
                 <option value="high">High</option>
               </select>
             </div>
+
+            {/* Due Date Status Filter */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Due Date Status</label>
+              <select
+                value={filters.dueDateStatus}
+                onChange={(e) => handleFilterChange('dueDateStatus', e.target.value)}
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              >
+                <option value="">All tasks</option>
+                <option value="overdue">Overdue</option>
+                <option value="upcoming">Upcoming (within 7 days)</option>
+                <option value="no-due-date">No due date</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -267,6 +294,9 @@ const ReportPage = () => {
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">
                     Assignee
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">
+                    Due Date
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">
                     Estimated Hours
@@ -297,6 +327,22 @@ const ReportPage = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-100">
                         {task.assignee || 'Unassigned'}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-100">
+                        {task.dueDate ? (
+                          <div className="flex items-center gap-1.5">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.isOverdue ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200'}`}>
+                              {new Date(task.dueDate).toLocaleDateString()}
+                            </span>
+                            {task.isOverdue && (
+                              <span className="inline-flex items-center rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-semibold text-white/90 dark:bg-rose-600">
+                                Overdue
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-slate-400 dark:text-slate-500 text-xs">No due date</span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
                         {task.estimatedHours?.toFixed(2) || '0.00'}
                       </td>
@@ -310,7 +356,7 @@ const ReportPage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center">
+                    <td colSpan="7" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <svg className="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
@@ -327,7 +373,7 @@ const ReportPage = () => {
               {rows.length > 0 && (
                 <tfoot className="bg-slate-50 border-t border-slate-200 dark:bg-slate-900 dark:border-slate-800">
                   <tr>
-                    <td colSpan="5" className="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-slate-100">
+                    <td colSpan="6" className="px-6 py-4 text-right text-sm font-medium text-slate-900 dark:text-slate-100">
                       Grand Total
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-primary-600">

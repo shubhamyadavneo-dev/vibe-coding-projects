@@ -45,6 +45,54 @@ const TaskCard = ({ task, index, onEdit, onDelete }) => {
     }
   };
 
+  const isTaskDelayed = (task) => {
+    if (!task.dueDate) return false;
+    const dueDate = new Date(task.dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate < today && task.status !== 'Done';
+  };
+
+  const formatDueDate = (dueDate) => {
+    if (!dueDate) return 'No due date';
+    const date = new Date(dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(date);
+    due.setHours(0, 0, 0, 0);
+    
+    const diffTime = due - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Tomorrow';
+    if (diffDays === -1) return 'Yesterday';
+    if (diffDays < 0) return `${Math.abs(diffDays)} days overdue`;
+    if (diffDays <= 7) return `In ${diffDays} days`;
+    
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const getDueDateColor = (dueDate, status) => {
+    if (!dueDate) return 'text-slate-500';
+    const date = new Date(dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(date);
+    due.setHours(0, 0, 0, 0);
+    
+    if (status === 'Done') return 'text-emerald-600 dark:text-emerald-400';
+    
+    const diffTime = due - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'text-rose-600 dark:text-rose-400';
+    if (diffDays === 0) return 'text-amber-600 dark:text-amber-400';
+    if (diffDays <= 3) return 'text-amber-600 dark:text-amber-400';
+    return 'text-slate-600 dark:text-slate-400';
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -56,7 +104,7 @@ const TaskCard = ({ task, index, onEdit, onDelete }) => {
       data-index={index}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`task-card mb-3 cursor-grab rounded-2xl border bg-gradient-to-br p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg active:cursor-grabbing ${getPriorityColor(task.priority)}`}
+      className={`task-card mb-3 cursor-grab rounded-2xl border bg-gradient-to-br p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg active:cursor-grabbing ${getPriorityColor(task.priority)} ${isTaskDelayed(task) ? 'border-rose-300 dark:border-rose-700' : ''}`}
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="space-y-2">
@@ -67,6 +115,11 @@ const TaskCard = ({ task, index, onEdit, onDelete }) => {
             <span className="rounded-full bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-white/90 dark:bg-slate-700">
               {task.status}
             </span>
+            {isTaskDelayed(task) && (
+              <span className="rounded-full bg-rose-500 px-2.5 py-1 text-[11px] font-semibold text-white/90 dark:bg-rose-600">
+                Critical
+              </span>
+            )}
           </div>
           <h3 className="text-base font-semibold text-slate-900 dark:text-slate-50 sm:text-lg">{task.title}</h3>
         </div>
@@ -77,11 +130,17 @@ const TaskCard = ({ task, index, onEdit, onDelete }) => {
       
       <p className="mb-4 line-clamp-3 text-sm text-slate-600 dark:text-slate-300 sm:text-base">{task.description || 'No description'}</p>
 
-      <div className="mb-4 grid grid-cols-2 gap-3 text-xs text-slate-600">
+      <div className="mb-4 grid grid-cols-3 gap-3 text-xs text-slate-600">
         <div className="rounded-xl border border-white/70 bg-white/70 p-3 backdrop-blur dark:border-slate-800 dark:bg-slate-900/50">
           <p className="mb-1 font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-400">Assignee</p>
           <p className="line-clamp-2 text-sm font-medium text-slate-800 dark:text-slate-100">
             {task.assignee ? task.assignee.name : 'Unassigned'}
+          </p>
+        </div>
+        <div className="rounded-xl border border-white/70 bg-white/70 p-3 backdrop-blur dark:border-slate-800 dark:bg-slate-900/50">
+          <p className="mb-1 font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-400">Due Date</p>
+          <p className={`text-sm font-medium ${getDueDateColor(task.dueDate, task.status)}`}>
+            {formatDueDate(task.dueDate)}
           </p>
         </div>
         <div className="rounded-xl border border-white/70 bg-white/70 p-3 backdrop-blur dark:border-slate-800 dark:bg-slate-900/50">

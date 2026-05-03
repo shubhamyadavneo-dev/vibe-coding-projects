@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime   @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt    DateTime?  @map("deleted_at") @db.Timestamptz()
+
+  roles         UserRole[]
+  recipes       Recipe[]
+  cookbooks     Cookbook[]
+  shoppingLists ShoppingList[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String           @unique
+  description String?
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz()
+
+  permissions RolePermission[]
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String           @unique
+  resource  String
+  action    String
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime         @updatedAt @map("updated_at") @db.Timestamptz()
+
+  roles     RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id") @db.Uuid
+  permissionId String     @map("permission_id") @db.Uuid
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId    String   @map("user_id") @db.Uuid
+  roleId    String   @map("role_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model Category {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  recipes Recipe[]
+
+  @@map("categories")
+}
+
+model Recipe {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title              String
+  mealType           String?  @map("meal_type")
+  cuisine            String?
+  ingredients        Ingredient[]
+  instructions       String
+  cookingTimeMinutes Int      @map("cooking_time_minutes")
+  difficulty         String   // Easy, Medium, Hard
+  categoryId         String?  @map("category_id") @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  servings           Int      @default(1)
+
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt          DateTime? @map("deleted_at") @db.Timestamptz()
+
+  user      User          @relation(fields: [userId], references: [id])
+  category  Category?     @relation(fields: [categoryId], references: [id])
+  images    RecipeImage[]
+  cookbooks CookbookRecipe[]
+
+  @@index([deletedAt])
+  @@map("recipes")
+}
+
+model Cookbook {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  description String?
+  userId      String   @map("user_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz()
+
+  user     User              @relation(fields: [userId], references: [id])
+  recipes  CookbookRecipe[]
+
+  @@map("cookbooks")
+}
+
+model CookbookRecipe {
+  cookbookId String @map("cookbook_id") @db.Uuid
+  recipeId   String @map("recipe_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  cookbook Cookbook @relation(fields: [cookbookId], references: [id], onDelete: Cascade)
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([cookbookId, recipeId])
+  @@map("cookbook_recipes")
+}
+
+model ShoppingList {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  user  User               @relation(fields: [userId], references: [id])
+  items ShoppingListItem[]
+
+  @@map("shopping_lists")
+}
+
+model ShoppingListItem {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shoppingListId String   @map("shopping_list_id") @db.Uuid
+  name           String
+  quantity       Float
+  unit           String
+  isPurchased    Boolean  @default(false) @map("is_purchased")
+
+  shoppingList ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+
+  @@map("shopping_list_items")
+}
+
+model Ingredient {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipeId  String   @map("recipe_id") @db.Uuid
+  name      String
+  quantity  Float
+  unit      IngredientUnit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_ingredients")
+}
+
+enum IngredientUnit {
+  g
+  kg
+  ml
+  l
+  tsp
+  tbsp
+  cup
+  pcs
+}
+
+model RecipeImage {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipeId  String   @map("recipe_id") @db.Uuid
+  url       String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_images")
+}

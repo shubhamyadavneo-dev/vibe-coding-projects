@@ -1,0 +1,447 @@
+You are a Senior SaaS UI/UX Designer AI.
+
+Design a complete, production-ready, fully responsive SaaS UI system for a web application named CookSuite.
+
+CookSuite is a premium SaaS platform for recipe management, cookbooks, meal planning, shopping lists, and RBAC-based access control.
+
+🎯 PRODUCT TYPE
+
+
+
+
+
+SaaS Web Application
+
+
+
+Multi-user RBAC system
+
+
+
+SEO-enabled public recipe pages
+
+
+
+Dashboard + productivity tool
+
+🧠 DESIGN STYLE
+
+Create a premium SaaS UI inspired by:
+
+
+
+
+
+Notion (clean structure)
+
+
+
+Linear (fast UX)
+
+
+
+Stripe (enterprise polish)
+
+
+
+Airtable (data-heavy UI)
+
+🎨 VISUAL DESIGN SYSTEM
+
+
+
+
+
+Minimal modern SaaS aesthetic
+
+
+
+White + soft neutral backgrounds
+
+
+
+Subtle green accent (food theme)
+
+
+
+Rounded corners (8–12px)
+
+
+
+Soft shadows (very light elevation)
+
+
+
+Grid-based layout system
+
+
+
+Strong typography hierarchy (Inter-like font)
+
+📱 RESPONSIVE DESIGN (MANDATORY)
+
+Breakpoints
+
+Design must explicitly support:
+
+DeviceWidthBehaviorMobile320px–767pxSingle column layoutTablet768px–1024pxSimplified gridDesktop1025px+Full multi-column SaaS layout
+
+MOBILE RULES
+
+
+
+
+
+Sidebar becomes bottom navigation OR collapsible drawer
+
+
+
+Tables convert to card stacks
+
+
+
+Meal planner becomes vertical timeline
+
+
+
+Recipe steps become full-width scroll sections
+
+
+
+Large touch-friendly buttons
+
+TABLET RULES
+
+
+
+
+
+2-column layouts where possible
+
+
+
+Condensed sidebar
+
+
+
+Hybrid grid for recipes & cookbooks
+
+
+
+Simplified calendar view
+
+DESKTOP RULES
+
+
+
+
+
+Full sidebar navigation
+
+
+
+Multi-column dashboards
+
+
+
+Drag & drop enabled meal planner
+
+
+
+Full RBAC admin panel visible
+
+
+
+Dense data tables allowed
+
+🧩 CORE SCREENS (GENERATE ALL)
+
+1. Dashboard
+
+
+
+
+
+Recent recipes
+
+
+
+Meal plan summary
+
+
+
+Shopping list widget
+
+
+
+Quick actions
+
+Responsive Behavior:
+
+
+
+
+
+Mobile: stacked cards
+
+
+
+Tablet: 2-column widgets
+
+
+
+Desktop: 3–4 column grid
+
+2. Recipes Page
+
+
+
+
+
+Search + filters
+
+
+
+Recipe grid/list toggle
+
+
+
+Create recipe button
+
+3. Recipe Detail Page
+
+
+
+
+
+Hero image
+
+
+
+Ingredients list
+
+
+
+Step-by-step instructions
+
+
+
+Save/share actions
+
+4. Cookbook Page
+
+
+
+
+
+Collection-based layout
+
+
+
+Drag & organize recipes
+
+
+
+Share functionality
+
+5. Meal Planner (CORE FEATURE)
+
+
+
+
+
+Weekly calendar view
+
+
+
+Drag & drop recipes into days
+
+
+
+Auto-generated shopping list
+
+6. Shopping List
+
+
+
+
+
+Grouped by category
+
+
+
+Check-off system
+
+
+
+Quantity adjustments
+
+
+
+Export option
+
+7. RBAC ADMIN PANEL
+
+
+
+
+
+Roles management
+
+
+
+Permissions table
+
+
+
+User-role mapping
+
+
+
+Access control overview
+
+8. PUBLIC SEO RECIPE PAGE
+
+
+
+
+
+Clean marketing-style layout
+
+
+
+Large hero image
+
+
+
+Ingredients + steps
+
+
+
+Fast-loading static page
+
+🔐 RBAC UI BEHAVIOR
+
+
+
+
+
+Admin: full access
+
+
+
+User: limited features
+
+
+
+Viewer: read-only mode
+
+
+
+Locked features must show disabled UI state
+
+🧩 DESIGN SYSTEM COMPONENTS
+
+Include reusable components:
+
+
+
+
+
+Buttons (primary, secondary, ghost)
+
+
+
+Cards (recipe, meal, cookbook)
+
+
+
+Tables (RBAC admin)
+
+
+
+Modals
+
+
+
+Inputs + search bars
+
+
+
+Calendar blocks
+
+
+
+Tags / badges
+
+
+
+Stepper component (recipe instructions)
+
+🔄 USER FLOWS (USE ARROWS ONLY)
+
+Recipe Creation
+
+Dashboard → Click Create Recipe → Add Title → Add Ingredients → Add Steps → Save Recipe → Publish
+
+Meal Planning
+
+Open Planner → Select Week → Drag Recipe → Assign Day → Generate Shopping List
+
+Shopping List
+
+Select Meal Plan → Extract Ingredients → Merge Items → Adjust Quantities → Export List
+
+⚡ INTERACTION DESIGN
+
+
+
+
+
+Smooth transitions (200–300ms)
+
+
+
+Drag & drop support (desktop/tablet)
+
+
+
+Touch-first interactions (mobile)
+
+
+
+Loading skeletons
+
+
+
+Instant UI feedback
+
+📦 OUTPUT REQUIREMENTS
+
+Generate:
+
+
+
+
+
+Full SaaS UI screens
+
+
+
+Responsive layouts for all breakpoints
+
+
+
+Component-based design system
+
+
+
+Clean production-ready UI structure
+
+
+
+Consistent spacing and alignment system
+
+🚀 FINAL GOAL
+
+Design a premium, fully responsive SaaS UI system for CookSuite that is ready for real-world production use.

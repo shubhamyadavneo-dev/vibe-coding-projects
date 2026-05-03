@@ -6,7 +6,6 @@
 **Version**: 1.0.0  
 **Date**: April 27, 2026  
 **Status**: Active Development  
-**Demo Environment**: Running at localhost:3000 (frontend) & localhost:5000 (backend)
 
 ## 2. Project Overview
 
@@ -28,14 +27,14 @@ A modern, production-ready Kanban board application built with the MERN stack (M
 - **Containerization**: Docker & Docker Compose for full-stack deployment
 - **Testing**: Jest for backend unit tests, React Testing Library for frontend
 
-### 3.2 Active Development Status
+### 3.2 Development
 - ✅ **Core Kanban Board**: Complete with 8-column workflow
-- ✅ **Task Management**: Full CRUD operations implemented
+- ✅ **Task Management**: Full CRUD operations 
 - ✅ **User Authentication**: JWT-based auth with secure endpoints
 - ✅ **Drag & Drop**: @dnd-kit integration for smooth task movement
-- 🔄 **Time Tracking**: Worklog system partially implemented
-- 🔄 **Reporting**: Time report view in development
-- 📋 **Testing**: Backend test coverage in progress
+- 🔄 **Time Tracking**: Worklog system 
+- 🔄 **Reporting**: Time report view 
+- 📋 **Testing**: Backend test coverage
 
 ### 3.3 Running Services
 - **Backend Server**: Active on localhost:5000 (confirmed via terminal)
@@ -44,7 +43,7 @@ A modern, production-ready Kanban board application built with the MERN stack (M
 
 ## 4. Feature Requirements
 
-### 4.1 Core Features (Implemented)
+### 4.1 Core Features
 1. **Board Management**
    - Create, read, update, and delete boards (projects)
    - Multiple boards per user with customizable workflows
@@ -281,14 +280,14 @@ GET    /api/reports/users    # User performance report
 
 ## 9. Development Roadmap
 
-### Phase 1: MVP (Completed)
+### Phase 1: MVP 
 - [x] Basic Kanban board with drag-and-drop
 - [x] Task CRUD operations
 - [x] User authentication
 - [x] 8-column workflow
 - [x] Docker configuration
 
-### Phase 2: Enhanced Features (Current)
+### Phase 2: Enhanced Features 
 - [x] Worklog system for time tracking
 - [ ] Time report view and analytics
 - [ ] Enhanced UI with theme support

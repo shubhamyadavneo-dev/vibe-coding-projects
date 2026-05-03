@@ -30,6 +30,7 @@ export const requirePermission = (permission: string) => {
           }
         }
       });
+      console.log("User roles::", userRoles);
 
       let hasPermission = false;
       for (const ur of userRoles) {

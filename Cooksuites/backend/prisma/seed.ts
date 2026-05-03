@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
 
 const prisma = new PrismaClient();
 
@@ -10,6 +11,7 @@ async function main() {
     { name: 'recipe:delete', resource: 'recipe', action: 'delete' },
     { name: 'cookbook:create', resource: 'cookbook', action: 'create' },
     { name: 'cookbook:share', resource: 'cookbook', action: 'share' },
+    { name: 'admin:manage', resource: 'admin', action: 'manage' },
   ];
 
   for (const perm of permissions) {
@@ -56,8 +58,8 @@ async function main() {
     });
   }
 
-  // Assign basic permissions to user
-  const userPerms = allPerms.filter(p => !['recipe:delete'].includes(p.name));
+  // Assign basic permissions to user (no delete or admin access)
+  const userPerms = allPerms.filter(p => !['recipe:delete', 'admin:manage'].includes(p.name));
   for (const perm of userPerms) {
     await prisma.rolePermission.upsert({
       where: {
@@ -72,6 +74,25 @@ async function main() {
         permissionId: perm.id
       }
     });
+  }
+
+  // ── Bootstrap first admin user ─────────────────────────────────────────────
+  // Set ADMIN_EMAIL in .env to auto-assign the admin role to that account.
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (adminEmail) {
+    const targetUser = await prisma.user.findUnique({ where: { email: adminEmail } });
+    if (targetUser) {
+      await prisma.userRole.upsert({
+        where: {
+          userId_roleId: { userId: targetUser.id, roleId: adminRole.id }
+        },
+        update: {},
+        create: { userId: targetUser.id, roleId: adminRole.id }
+      });
+      console.log(`✅ Admin role assigned to ${adminEmail}`);
+    } else {
+      console.warn(`⚠️  ADMIN_EMAIL is set to "${adminEmail}" but no matching user found. Register first, then re-run the seed.`);
+    }
   }
 
   console.log('Seed completed successfully');

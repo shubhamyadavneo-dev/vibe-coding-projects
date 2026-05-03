@@ -36,16 +36,16 @@ export default function RegisterPage() {
 
           {/* Form */}
           <RegisterForm />
-
-          {/* Divider */}
+          {/* 
+          Divider
           <div className="relative my-xl flex items-center">
             <div className="flex-grow border-t border-outline-variant" />
             <span className="mx-md font-label-sm text-label-sm text-on-surface-variant bg-white px-md tracking-widest uppercase">Or</span>
             <div className="flex-grow border-t border-outline-variant" />
-          </div>
+          </div> */}
 
           {/* Social Options */}
-          <div className="grid grid-cols-2 gap-md">
+          {/* <div className="grid grid-cols-2 gap-md">
             <button className="flex items-center justify-center gap-sm py-md px-lg bg-surface-container border border-outline-variant rounded-lg font-label-sm text-label-sm text-on-surface hover:bg-surface-container-high transition-colors">
               <Image alt="Google" className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5czUxjGEq7bgmjUe--2oQLhZN7a230pr2nfGxB_UjbuPZ-jeNTZguSAPJ1ExUBIK9uI7RwO3kEVCBNJ5vcyngRmJ0cuRTUihkHQWm7flbQk4mooYwqECoI-uODmjpQcgYyBeFzfl7T55zCk7DA4RbOGS2C1_Bz0iyzers3aON8V6Y7m29Jk1hyqLst5DZm0SrHmnPmq-lwcyQdy6Nnsakv5VH6oKCWnNIynjuvp1enW57gHRyzGJjUIpfE73L_TwCgSBLVMXgWw72" />
               Google
@@ -54,7 +54,7 @@ export default function RegisterPage() {
               <Apple className="h-5 w-5 fill-on-surface" />
               Apple
             </button>
-          </div>
+          </div> */}
 
           {/* Footer Links */}
           <div className="mt-xl pt-lg border-t border-outline-variant text-center">

@@ -8,14 +8,14 @@ CONTEXT:
 - Frontend is built using Create React App with React v19
 - Backend is built using Node.js with Express v5
 - MongoDB is used for persistence
-- Client and server are maintained as separate folders (no monorepo tooling required)
-- The goal is to build a minimal but scalable Jira-like board
+- Client and server are maintained as separate folders
+- The goal is to build a minimal but scalable Jira-like board with TDD approach.
 
 REQUIREMENTS:
 
 1. CORE FEATURES:
 - Create and manage boards (projects)
-- Each board contains columns (Todo, In Progress, Done - configurable)
+- Each board contains columns (Backlog, Analysis, Ready, Development, Review, Testing, Staging,Done - configurable)
 - Create, update, delete tasks
 - Each task contains:
   - title

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#1a1c1b",
+                    "secondary-container": "#dce2f3",
+                    "inverse-surface": "#2f312f",
+                    "surface-dim": "#dadad8",
+                    "surface": "#faf9f7",
+                    "on-secondary-fixed": "#151c27",
+                    "surface-container-high": "#e8e8e6",
+                    "primary-container": "#2d4b3e",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#99baa9",
+                    "on-tertiary-fixed": "#301313",
+                    "background": "#faf9f7",
+                    "tertiary-fixed": "#ffdad8",
+                    "on-secondary-container": "#5e6572",
+                    "inverse-primary": "#adcebd",
+                    "tertiary-container": "#603b3a",
+                    "inverse-on-surface": "#f1f1ee",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#012116",
+                    "on-surface-variant": "#424844",
+                    "outline-variant": "#c1c8c3",
+                    "secondary": "#585f6c",
+                    "surface-variant": "#e3e2e0",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#466557",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#404754",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#462525",
+                    "tertiary-fixed-dim": "#eebab8",
+                    "on-tertiary-fixed-variant": "#623d3c",
+                    "primary": "#163428",
+                    "surface-container": "#eeeeeb",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1c1b",
+                    "secondary-fixed": "#dce2f3",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#c8ead8",
+                    "on-primary-fixed-variant": "#2f4d40",
+                    "secondary-fixed-dim": "#c0c7d6",
+                    "outline": "#727974",
+                    "surface-bright": "#faf9f7",
+                    "on-tertiary-container": "#d9a6a4",
+                    "primary-fixed-dim": "#adcebd",
+                    "surface-container-highest": "#e3e2e0",
+                    "surface-container-low": "#f4f4f1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "xl": "48px",
+                    "unit": "4px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "container-max": "1280px",
+                    "sm": "8px",
+                    "gutter": "20px"
+            },
+            "fontFamily": {
+                    "display-xl": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-xl": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "headline-md": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf9f7; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid #E5E7EB; }
+    </style>
+</head>
+<body class="text-on-surface antialiased">
+<aside class="hidden md:flex h-screen w-64 border-r fixed left-0 top-0 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 flex-col gap-1 p-6 z-50">
+<div class="mb-8 px-2">
+<h1 class="text-xl font-bold tracking-tighter text-emerald-900 dark:text-emerald-50">CookSuite</h1>
+<p class="font-['Inter'] text-sm font-medium text-zinc-500">Culinary Suite</p>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-emerald-900 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-lg duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-['Inter'] text-sm font-medium">Recipes</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-['Inter'] text-sm font-medium">Cookbooks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-['Inter'] text-sm font-medium">Meal Planner</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-['Inter'] text-sm font-medium">Shopping List</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-['Inter'] text-sm font-medium">Admin Panel</span>
+</a>
+</nav>
+</aside>
+<header class="md:ml-64 bg-white dark:bg-zinc-950 font-['Inter'] antialiased tracking-tight border-b border-zinc-200 dark:border-zinc-800 h-16 fixed top-0 right-0 left-0 z-40 flex justify-between items-center px-6 md:px-12">
+<div class="flex items-center gap-4">
+<span class="md:hidden material-symbols-outlined text-zinc-500" data-icon="menu">menu</span>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm" data-icon="search">search</span>
+<input class="bg-zinc-50 border-none rounded-full pl-10 pr-4 py-1.5 text-sm focus:ring-1 focus:ring-primary w-48 md:w-64" placeholder="Search recipes..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-900 p-2 rounded-full transition-colors active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-zinc-200">
+<img alt="User profile" data-alt="A professional headshot of a person with a friendly expression, set against a soft, out-of-focus background. The image has a clean, airy quality that aligns with a high-end minimalist digital interface, featuring neutral tones and sharp detail in the foreground." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkCAK2_4vDXutPAAeWBONuE16cCVduCpp1vunZ1KbaVD6SFqNGZG-82qrygbsdBsTN2bfCQTzVUZJ67S1UargzIQR01FwBv6OEa7rsMXgVIj92wj2sWKk5cXS7XlgiHLOkornh3uxDu4DlSPRWoWMeWWUaydvKV78oRkW8gkBZxuLeKbkS-p_TWSDkB9Lpmx2x29HquaaybfQ3pXcvNkZLWgFIlcXGOkkiMnMmqhtNb9fa_rMRNVQ_1ULf8AQ4FS5KDOF8I5ynPSmT"/>
+</div>
+</div>
+</header>
+<main class="md:ml-64 pt-24 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<section class="md:col-span-8 space-y-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-2">Welcome back, Chef</h2>
+<p class="font-body-md text-body-md text-secondary">You have 4 recipes planned for this week.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button class="flex items-center justify-between p-6 bg-primary text-white rounded-xl shadow-none hover:opacity-90 transition-all group">
+<div class="text-left">
+<span class="font-headline-md text-headline-md block">Create Recipe</span>
+<span class="font-label-sm text-label-sm opacity-80">Add a new culinary masterpiece</span>
+</div>
+<span class="material-symbols-outlined text-3xl" data-icon="add_circle">add_circle</span>
+</button>
+<button class="flex items-center justify-between p-6 bg-secondary-container text-on-secondary-container rounded-xl shadow-none hover:bg-zinc-200 transition-all group">
+<div class="text-left">
+<span class="font-headline-md text-headline-md block">Plan Meal</span>
+<span class="font-label-sm text-label-sm">Organize your weekly nutrition</span>
+</div>
+<span class="material-symbols-outlined text-3xl" data-icon="calendar_add_on">calendar_add_on</span>
+</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-primary">Recent Recipes</h3>
+<a class="font-label-sm text-label-sm text-primary flex items-center gap-1 hover:underline" href="#">View All <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span></a>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 -mx-2 px-2 no-scrollbar">
+<div class="flex-none w-64 bg-white rounded-xl border border-zinc-200 overflow-hidden hover:shadow-lg transition-shadow">
+<div class="h-40 bg-zinc-100 overflow-hidden">
+<img alt="Avocado Toast" class="w-full h-full object-cover" data-alt="A beautifully plated gourmet avocado toast with poached eggs, microgreens, and a drizzle of balsamic glaze. The lighting is bright and natural, emphasizing the vibrant greens and textures, set in a clean, modern kitchen environment with soft neutral tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMpd_WtnaCwKd9u6j422pibYPacBR3E7gxoxNvuqPaylGKejDqZ8UMqXc5_qNrIO9M5mNNgucFjGbApNUG2fDuFwTPZC7ncQY3UlMT-D85KNDtTPNGLWATx9YOUpnEfvAfS-mRGJHDdgRlpaax2btvmUxN4ZlKoxoCaXZ-z4VMCysB_iqeCoCzWtrbYckJdHbDzv4plXxsOvHYQC7BvLn6MGjctfx4YRXsdx9CW_TOJ650fuVQjEVHjrr8Eo1QFV1e6d1pNXnnx9Zq"/>
+</div>
+<div class="p-4">
+<span class="font-label-sm text-[10px] uppercase tracking-widest text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded mb-2 inline-block">Healthy</span>
+<h4 class="font-headline-md text-headline-md mb-1">Morning Fuel Toast</h4>
+<div class="flex items-center gap-3 text-secondary">
+<span class="flex items-center gap-1 font-label-sm text-label-sm"><span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span> 15 min</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm"><span class="material-symbols-outlined text-xs" data-icon="bar_chart">bar_chart</span> Easy</span>
+</div>
+</div>
+</div>
+<div class="flex-none w-64 bg-white rounded-xl border border-zinc-200 overflow-hidden hover:shadow-lg transition-shadow">
+<div class="h-40 bg-zinc-100 overflow-hidden">
+<img alt="Grilled Salmon" class="w-full h-full object-cover" data-alt="Succulent grilled salmon fillet served with roasted asparagus and lemon slices. The dish is presented on a minimalist ceramic plate against a dark, refined background, capturing the high-end aesthetic of culinary precision and professional meal planning." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASmibBHYIcl1j9uBhBOQg33zIX-VxKJ54jTmhoQV5R-Z0tA5VqzkklDmU3b3Xpk8CrHwqERAcsOchRLwdZXA_OhlDv7WLS0MjDdzYxVMRT8ixb39Gr_SglqsAnBJVANnhaHxipE7jlHIE18Cyjj0hiSaMM590UBotDCvUjmlTbTNr50btwFZ2Z5CSe9-ffA6UwL14dBn6CLfR9ZyL0y4RXHc8e4NZ5ilyYJFkei7Hr3bXKHC7vsEoMZvN1i8iNHbD4X7wTQfFmBfgf"/>
+</div>
+<div class="p-4">
+<span class="font-label-sm text-[10px] uppercase tracking-widest text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded mb-2 inline-block">High Protein</span>
+<h4 class="font-headline-md text-headline-md mb-1">Zesty Lemon Salmon</h4>
+<div class="flex items-center gap-3 text-secondary">
+<span class="flex items-center gap-1 font-label-sm text-label-sm"><span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span> 25 min</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm"><span class="material-symbols-outlined text-xs" data-icon="bar_chart">bar_chart</span> Medium</span>
+</div>
+</div>
+</div>
+<div class="flex-none w-64 bg-white rounded-xl border border-zinc-200 overflow-hidden hover:shadow-lg transition-shadow">
+<div class="h-40 bg-zinc-100 overflow-hidden">
+<img alt="Quinoa Salad" class="w-full h-full object-cover" data-alt="A vibrant, multi-colored Mediterranean quinoa salad featuring cherry tomatoes, cucumbers, feta, and fresh herbs. The presentation is editorial and crisp, reflecting a clean and healthy lifestyle with soft, balanced lighting and a neutral tabletop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQnAYH0x86v78jjDw-oOrhbi2IX4x-tPBD0tWv7XyDW_pgktW5Jk7elcc68w7BgwAsTuvsB0TG5gkW5dWMemEhJLPw928WgnMM75evVD6U-wrXnRZUqbLx6G0J_86MRLsWUpQ7NMskeKPkB8d6z1ER3cBR1vezkxBcU76NSTbwJXgV2jvIVJuiPxwjwcpxpBPGnKNjKLMi9TcV9yqNW6A7nRmSbRgSSKv6lB2XfkvQLTsNlzsV5Yd6o7WtaHi7URn9zO-5NnMfCISX"/>
+</div>
+<div class="p-4">
+<span class="font-label-sm text-[10px] uppercase tracking-widest text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded mb-2 inline-block">Vegan</span>
+<h4 class="font-headline-md text-headline-md mb-1">Rainbow Quinoa Bowl</h4>
+<div class="flex items-center gap-3 text-secondary">
+<span class="flex items-center gap-1 font-label-sm text-label-sm"><span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span> 20 min</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm"><span class="material-symbols-outlined text-xs" data-icon="bar_chart">bar_chart</span> Easy</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="font-headline-md text-headline-md text-primary">Weekly Meal Plan</h3>
+<div class="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+<div class="grid grid-cols-7 border-b border-zinc-100">
+<div class="p-3 text-center border-r border-zinc-100 bg-zinc-50"><span class="font-label-sm text-[10px] text-secondary">MON</span></div>
+<div class="p-3 text-center border-r border-zinc-100"><span class="font-label-sm text-[10px] text-secondary">TUE</span></div>
+<div class="p-3 text-center border-r border-zinc-100 bg-emerald-50"><span class="font-label-sm text-[10px] text-emerald-900 font-bold">WED</span></div>
+<div class="p-3 text-center border-r border-zinc-100"><span class="font-label-sm text-[10px] text-secondary">THU</span></div>
+<div class="p-3 text-center border-r border-zinc-100"><span class="font-label-sm text-[10px] text-secondary">FRI</span></div>
+<div class="p-3 text-center border-r border-zinc-100"><span class="font-label-sm text-[10px] text-secondary">SAT</span></div>
+<div class="p-3 text-center"><span class="font-label-sm text-[10px] text-secondary">SUN</span></div>
+</div>
+<div class="p-6">
+<div class="flex items-start gap-4">
+<div class="h-20 w-20 rounded-lg bg-zinc-100 overflow-hidden flex-none">
+<img alt="Lentil Soup" class="w-full h-full object-cover" data-alt="A comforting bowl of hearty red lentil soup garnished with a swirl of cream and fresh parsley. The image uses a rustic yet refined style, with warm lighting and a neutral, textured background that highlights the soup's rich color." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg30maI7nf79QziCHTmGmKzUUV4XrR17jRDkC6-1gavfItyvrtoMBavTUqdWckChlhweBvMyLfHn5v_3ZIeWUtetSZF9cbQ4fjgklda-ZetHK_Wpw0dSpJU0xAY4qoYk53XmpYiwq9nrLcbtSKzwwZu1knClUejHCS1MzV6yupnIfjAX4GTsGL4Bja2u6ZOcvVkQolrRyxtxGtT6k4FbeXeqEIT5o6UiywTCkR0kiSgisD0JNTK_G1sMrwYVI-sz_b9Wt_-Q0tEwq-"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-label-sm text-[10px] uppercase text-emerald-900 font-bold">Today's Dinner</span>
+<h4 class="font-headline-md text-headline-md">Spiced Red Lentil Soup</h4>
+</div>
+<button class="text-zinc-400 hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span></button>
+</div>
+<div class="flex gap-4 mt-3">
+<span class="flex items-center gap-1 font-label-sm text-label-sm text-secondary"><span class="material-symbols-outlined text-xs" data-icon="restaurant">restaurant</span> 2 Servings</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm text-secondary"><span class="material-symbols-outlined text-xs" data-icon="nutrition">nutrition</span> 420 kcal</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<aside class="md:col-span-4 space-y-8">
+<div class="bg-white rounded-xl border border-zinc-200 p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Shopping List</h3>
+<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">12 items</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<input class="rounded text-primary focus:ring-primary h-4 w-4 border-zinc-300" type="checkbox"/>
+<span class="font-body-md text-body-md text-primary">Greek Yogurt (500g)</span>
+<span class="ml-auto font-label-sm text-zinc-400">Dairy</span>
+</div>
+<div class="flex items-center gap-3">
+<input class="rounded text-primary focus:ring-primary h-4 w-4 border-zinc-300" type="checkbox"/>
+<span class="font-body-md text-body-md text-primary">Fresh Spinach</span>
+<span class="ml-auto font-label-sm text-zinc-400">Produce</span>
+</div>
+<div class="flex items-center gap-3">
+<input checked="" class="rounded text-primary focus:ring-primary h-4 w-4 border-zinc-300" type="checkbox"/>
+<span class="font-body-md text-body-md text-zinc-400 line-through">Whole Wheat Bread</span>
+<span class="ml-auto font-label-sm text-zinc-300">Bakery</span>
+</div>
+<div class="flex items-center gap-3">
+<input class="rounded text-primary focus:ring-primary h-4 w-4 border-zinc-300" type="checkbox"/>
+<span class="font-body-md text-body-md text-primary">Garlic Bulbs (2)</span>
+<span class="ml-auto font-label-sm text-zinc-400">Pantry</span>
+</div>
+<div class="flex items-center gap-3">
+<input class="rounded text-primary focus:ring-primary h-4 w-4 border-zinc-300" type="checkbox"/>
+<span class="font-body-md text-body-md text-primary">Red Onions</span>
+<span class="ml-auto font-label-sm text-zinc-400">Produce</span>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border-2 border-dashed border-zinc-200 rounded-lg font-label-sm text-secondary hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span> Add Item
+                    </button>
+<button class="w-full mt-3 bg-secondary-container text-on-secondary-container py-3 rounded-lg font-headline-md hover:bg-zinc-200 transition-all">Go to List</button>
+</div>
+<div class="bg-primary-container text-on-primary-container rounded-xl p-6 relative overflow-hidden group">
+<div class="relative z-10">
+<h4 class="font-headline-md text-headline-md text-white mb-2">Upgrade to Pro</h4>
+<p class="font-body-md text-body-md opacity-80 mb-4">Unlock advanced nutrition tracking and AI meal generation.</p>
+<button class="bg-white text-primary px-4 py-2 rounded-lg font-label-sm hover:bg-emerald-50 transition-all">Start Free Trial</button>
+</div>
+<div class="absolute -right-8 -bottom-8 opacity-20 transform group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[120px]" data-icon="restaurant">restaurant</span>
+</div>
+</div>
+<div class="bg-white rounded-xl border border-zinc-200 p-6">
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Quick Stats</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="text-center p-3 bg-zinc-50 rounded-lg">
+<span class="block font-headline-md text-headline-md text-primary">84%</span>
+<span class="font-label-sm text-label-sm text-secondary">Healthy Choice</span>
+</div>
+<div class="text-center p-3 bg-zinc-50 rounded-lg">
+<span class="block font-headline-md text-headline-md text-primary">12</span>
+<span class="font-label-sm text-label-sm text-secondary">New Recipes</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<footer class="md:hidden fixed bottom-0 w-full border-t z-50 pb-safe bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-zinc-200 dark:border-zinc-800 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] flex justify-around items-center h-16">
+<a class="flex flex-col items-center justify-center text-emerald-900 dark:text-emerald-400 p-2 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 p-2 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Recipes</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 p-2 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Planner</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 p-2 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">List</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 p-2 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Profile</span>
+</a>
+</footer>
+</body></html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#adcebd",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#dce2f3",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#adcebd",
+                    "outline": "#727974",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-container": "#99baa9",
+                    "primary-container": "#2d4b3e",
+                    "surface-bright": "#faf9f7",
+                    "on-background": "#1a1c1b",
+                    "surface-dim": "#dadad8",
+                    "surface": "#faf9f7",
+                    "on-surface": "#1a1c1b",
+                    "surface-container-highest": "#e3e2e0",
+                    "surface-variant": "#e3e2e0",
+                    "on-tertiary-fixed": "#301313",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#404754",
+                    "inverse-on-surface": "#f1f1ee",
+                    "secondary-container": "#dce2f3",
+                    "on-tertiary-container": "#d9a6a4",
+                    "secondary": "#585f6c",
+                    "on-secondary-fixed": "#151c27",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdad8",
+                    "on-tertiary-fixed-variant": "#623d3c",
+                    "inverse-surface": "#2f312f",
+                    "on-primary-fixed-variant": "#2f4d40",
+                    "on-primary-fixed": "#012116",
+                    "surface-container-high": "#e8e8e6",
+                    "tertiary-container": "#603b3a",
+                    "outline-variant": "#c1c8c3",
+                    "tertiary-fixed-dim": "#eebab8",
+                    "surface-tint": "#466557",
+                    "background": "#faf9f7",
+                    "tertiary": "#462525",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#c8ead8",
+                    "primary": "#163428",
+                    "on-secondary-container": "#5e6572",
+                    "surface-container": "#eeeeeb",
+                    "secondary-fixed-dim": "#c0c7d6",
+                    "on-surface-variant": "#424844",
+                    "surface-container-low": "#f4f4f1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xl": "48px",
+                    "lg": "24px",
+                    "gutter": "20px",
+                    "container-max": "1280px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-xl": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-md": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-xl": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #faf9f7;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-xl">
+<div class="flex w-full max-w-[1100px] bg-white rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="hidden lg:flex lg:w-1/2 relative bg-primary overflow-hidden">
+<div class="absolute inset-0 opacity-40">
+<img alt="" class="w-full h-full object-cover" data-alt="A high-end professional kitchen scene featuring high-resolution textures of stainless steel and marble. Soft morning light streams through a window, illuminating a clean, minimalist workstation with organized culinary tools. The atmosphere is calm and disciplined, reflecting a premium editorial style with a deep forest green and pristine white color palette consistent with a luxury software brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA68xvkVl1fhayLUPVR4C3LQjlzf66pH66fCx0CdI2aGNV_NOFlKlv2s_rN2p--VLrLqTfygBFP3QKPFUg3YYZr6JmI92XIPbjTHQ-x1ufEO4sC8ULuFEifFFgsDcn3QCUhAs9cupBh5GFO5x8d1fAyUcQNrnJJHEWmwKsQFC_9kH5fcEMtPyjp0xDVJj5Wy6WoKPAwQ6hD2vIb61ONw1LijY6rCWpoFXTr-ckdhT2ZSFpbEOw5JBhiWXfOo19ThmowY_NjLtuxgsRJ"/>
+</div>
+<div class="relative z-10 p-xl flex flex-col justify-between h-full w-full">
+<div>
+<h2 class="text-white font-display-xl text-display-xl tracking-tight mb-md">CookSuite</h2>
+<p class="text-primary-fixed-dim font-body-lg text-body-lg max-w-sm">Elevate your culinary management with professional-grade precision tools.</p>
+</div>
+<div class="space-y-lg">
+<div class="p-lg bg-primary-container/30 rounded-lg border border-white/10 backdrop-blur-md">
+<div class="flex gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-white font-body-md text-body-md italic mb-sm">"The quiet luxury of the interface allows my recipes to take center stage. Truly the most efficient tool for modern chefs."</p>
+<p class="text-primary-fixed-dim font-label-sm text-label-sm uppercase tracking-widest">— Executive Chef, L'Aubergine</p>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/2 p-xl lg:px-24 flex flex-col justify-center">
+<div class="mb-xl">
+<div class="flex items-center gap-xs mb-lg lg:hidden">
+<span class="material-symbols-outlined text-primary" style="font-size: 32px;">restaurant_menu</span>
+<span class="font-display-xl text-headline-lg tracking-tight text-primary">CookSuite</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-background mb-xs">Welcome Back</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Access your professional culinary workspace.</p>
+</div>
+<div class="grid grid-cols-2 gap-md mb-xl">
+<button class="flex items-center justify-center gap-sm py-md px-lg bg-surface-container border border-outline-variant rounded-lg font-label-sm text-label-sm text-on-surface hover:bg-surface-container-high transition-colors">
+<img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5czUxjGEq7bgmjUe--2oQLhZN7a230pr2nfGxB_UjbuPZ-jeNTZguSAPJ1ExUBIK9uI7RwO3kEVCBNJ5vcyngRmJ0cuRTUihkHQWm7flbQk4mooYwqECoI-uODmjpQcgYyBeFzfl7T55zCk7DA4RbOGS2C1_Bz0iyzers3aON8V6Y7m29Jk1hyqLst5DZm0SrHmnPmq-lwcyQdy6Nnsakv5VH6oKCWnNIynjuvp1enW57gHRyzGJjUIpfE73L_TwCgSBLVMXgWw72"/>
+                    Google
+                </button>
+<button class="flex items-center justify-center gap-sm py-md px-lg bg-surface-container border border-outline-variant rounded-lg font-label-sm text-label-sm text-on-surface hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 1;">ios</span>
+                    Apple
+                </button>
+</div>
+<div class="relative mb-xl flex items-center">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="mx-md font-label-sm text-label-sm text-on-surface-variant bg-white px-md">OR EMAIL</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<form class="space-y-lg">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-xs" for="email">Email Address</label>
+<input class="w-full px-md py-md rounded-lg border border-outline-variant bg-surface-bright focus:ring-2 focus:ring-primary-fixed-dim focus:border-primary transition-all outline-none font-body-md text-body-md" id="email" name="email" placeholder="chef@restaurant.com" type="email"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-xs">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<input class="w-full px-md py-md rounded-lg border border-outline-variant bg-surface-bright focus:ring-2 focus:ring-primary-fixed-dim focus:border-primary transition-all outline-none font-body-md text-body-md" id="password" name="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary" type="button">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" id="remember" type="checkbox"/>
+<label class="font-body-md text-body-md text-on-surface-variant" for="remember">Remember me for 30 days</label>
+</div>
+<button class="w-full py-md bg-primary text-white rounded-lg font-label-sm text-label-sm uppercase tracking-widest font-semibold hover:opacity-90 transition-all active:scale-[0.98] mt-lg" type="submit">
+                    Sign In to Workspace
+                </button>
+</form>
+<div class="mt-xl pt-lg border-t border-outline-variant text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    New to CookSuite? 
+                    <a class="text-primary font-semibold hover:underline" href="#">Create an account</a>
+</p>
+</div>
+</div>
+</div>
+<div class="fixed bottom-lg left-0 right-0 text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-60">
+            © 2024 CookSuite Systems Inc. • <a class="hover:text-primary" href="#">Privacy</a> • <a class="hover:text-primary" href="#">Terms</a>
+</p>
+</div>
+</body></html>

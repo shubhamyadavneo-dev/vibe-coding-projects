@@ -4,6 +4,7 @@ import { setToken, logout } from '@/store/slices/authSlice';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1',
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -35,9 +36,10 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/auth/refresh') {
+    // Only intercept genuine 401 errors, skip if already retried
+    if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
           failedQueue.push({ resolve, reject });
         }).then(token => {
           originalRequest.headers.Authorization = 'Bearer ' + token;
@@ -58,18 +60,13 @@ api.interceptors.response.use(
         );
 
         const newToken = data.data.accessToken;
-        
-        // Update Redux state and localStorage
         store.dispatch(setToken(newToken));
-        
         processQueue(null, newToken);
-        
-        // Retry the original request with the new token
+
         originalRequest.headers.Authorization = 'Bearer ' + newToken;
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        // Dispatch logout action if refresh fails
         store.dispatch(logout());
         return Promise.reject(refreshError);
       } finally {

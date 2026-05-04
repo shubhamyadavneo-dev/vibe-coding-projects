@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { Header } from '@/components/shared/Header';
 import { SearchInput } from '@/components/shared/SearchInput';
@@ -9,7 +9,7 @@ import { RecipeCard } from '@/components/recipes/RecipeCard';
 import { recipeService, RecipeFilters } from '@/services/recipeService';
 import { categoryService, Category } from '@/services/categoryService';
 import { Recipe } from '@/store/slices/recipeSlice';
-import { Loader2, SearchX, AlertCircle, Plus, LayoutGrid, List, ShoppingCart, Check } from 'lucide-react';
+import { Loader2, SearchX, AlertCircle, Plus, LayoutGrid, List, ShoppingCart, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { shoppingListService } from '@/services/shoppingListService';
@@ -28,7 +28,6 @@ import {
 export default function RecipesPage() {
   const router = useRouter();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
@@ -38,7 +37,10 @@ export default function RecipesPage() {
     search: '',
     mealType: '',
     difficulty: '',
+    category: '',
   });
+
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<string[]>([]);
@@ -66,24 +68,12 @@ export default function RecipesPage() {
     }
   };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await categoryService.getCategories();
-        setCategories(response.data);
-      } catch (err) {
-        console.error('Failed to fetch categories', err);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  const fetchRecipes = useCallback(async (isLoadMore = false) => {
+  const fetchRecipes = useCallback(async (isLoadMore = false, cursor?: string) => {
     try {
       setLoading(true);
       const params = {
         ...filters,
-        cursor: isLoadMore ? nextCursor : undefined,
+        cursor: isLoadMore ? cursor : undefined,
         limit: 12,
       };
       const response = await recipeService.getRecipes(params);
@@ -103,15 +93,52 @@ export default function RecipesPage() {
     } finally {
       setLoading(false);
     }
-  }, [filters, nextCursor]);
+  }, [filters]);
 
   useEffect(() => {
     fetchRecipes();
-  }, [filters, fetchRecipes]);
+  }, [fetchRecipes]);
 
   const handleSearch = (search: string) => {
-    setFilters(prev => ({ ...prev, search }));
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(() => {
+      setFilters(prev => {
+        if (prev.search === search) return prev;
+        return { ...prev, search };
+      });
+    }, 400);
   };
+
+  const handleDifficultyChange = (val: string) => {
+    setFilters(prev => {
+      const next = val || undefined;
+      if (prev.difficulty === next) return prev;
+      return { ...prev, difficulty: next };
+    });
+  };
+
+  const handleCategoryChange = (val: string) => {
+    setFilters(prev => {
+      const next = val || undefined;
+      if (prev.category === next) return prev;
+      return { ...prev, category: next };
+    });
+  };
+
+  const handleMealTypeChange = (val: string) => {
+    setFilters(prev => {
+      const next = val || undefined;
+      if (prev.mealType === next) return prev;
+      return { ...prev, mealType: next };
+    });
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ search: '', mealType: '', difficulty: '', category: '' });
+  };
+
+  const activeFilterCount = [filters.difficulty, filters.category, filters.mealType]
+    .filter(Boolean).length;
 
   const handleRecipeClick = (id: string) => {
     if (selectionMode) {
@@ -200,38 +227,45 @@ export default function RecipesPage() {
         </div>
 
         {/* Filter Bar */}
-        {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-white border border-zinc-100 p-4 rounded-xl shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-white border border-zinc-100 p-4 rounded-xl shadow-sm">
           <div className="flex flex-wrap items-center gap-3">
             <FilterSelect
-              label="Cuisine"
-              options={categories.map(c => ({ label: c.name, value: c.id }))}
-              value={filters?.category || ''}
-              onChange={(val) => setFilters(prev => ({ ...prev, category: val || undefined }))}
-            />
-            <FilterSelect
-              label="Time"
+              label="Difficulty"
               options={[
-                { label: '< 30m', value: '30' },
-                { label: '< 1hr', value: '60' }
+                { label: 'Easy', value: 'Easy' },
+                { label: 'Medium', value: 'Medium' },
+                { label: 'Hard', value: 'Hard' },
               ]}
               value={filters.difficulty || ''}
-              onChange={(val) => setFilters(prev => ({ ...prev, difficulty: val || undefined }))}
+              onChange={handleDifficultyChange}
             />
             <FilterSelect
-              label="Diet"
+              label="Meal Type"
               options={[
-                { label: 'Vegetarian', value: 'Vegetarian' },
-                { label: 'Vegan', value: 'Vegan' },
-                { label: 'Gluten-Free', value: 'Gluten-Free' }
+                { label: 'Breakfast', value: 'Breakfast' },
+                { label: 'Lunch', value: 'Lunch' },
+                { label: 'Dinner', value: 'Dinner' },
+                { label: 'Snack', value: 'Snack' },
+                { label: 'Dessert', value: 'Dessert' },
               ]}
               value={filters.mealType || ''}
-              onChange={(val) => setFilters(prev => ({ ...prev, mealType: val || undefined }))}
+              onChange={handleMealTypeChange}
             />
+            {activeFilterCount > 0 && (
+              <button
+                onClick={handleClearFilters}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors"
+              >
+                <X className="h-3 w-3" />
+                Clear filters
+                <span className="ml-1 h-4 w-4 rounded-full bg-red-600 text-white text-[10px] flex items-center justify-center">{activeFilterCount}</span>
+              </button>
+            )}
           </div>
           <div className="text-[10px] font-bold text-zinc-400 tracking-widest uppercase">
             Showing {recipes.length} recipes
           </div>
-        </div> */}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {recipes.map(recipe => (
             <div key={recipe.id} className="relative cursor-pointer group" onClick={() => handleRecipeClick(recipe.id)}>
@@ -280,7 +314,7 @@ export default function RecipesPage() {
         {hasMore && (
           <div className="mt-12 flex justify-center">
             <Button
-              onClick={() => fetchRecipes(true)}
+              onClick={() => fetchRecipes(true, nextCursor)}
               disabled={loading}
               variant="outline"
               className="rounded-xl px-8 h-11 font-medium bg-white text-zinc-900 border-zinc-200 hover:bg-zinc-50 shadow-sm"

@@ -43,7 +43,7 @@ export default function DashboardPage() {
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<string[]>([]);
   const [showGenerateDialog, setShowGenerateDialog] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  
+
   const canCreateRecipe = usePermission('recipe:create');
   const canCreateList = usePermission('shopping:create');
 
@@ -202,36 +202,57 @@ export default function DashboardPage() {
 
             <div className="space-y-4">
               <h3 className="text-xl font-bold text-emerald-900">Weekly Meal Plan</h3>
-              <div className="bg-white rounded-[2rem] border border-zinc-100 overflow-hidden shadow-sm">
-                <div className="grid grid-cols-7 border-b border-zinc-50">
-                  {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((day, idx) => (
-                    <div key={day} className={`p-3 text-center border-r border-zinc-50 last:border-0 ${idx === 2 ? 'bg-emerald-50' : 'bg-white'}`}>
-                      <span className={`text-[10px] font-bold tracking-widest ${idx === 2 ? 'text-emerald-900' : 'text-zinc-400'}`}>{day}</span>
-                    </div>
-                  ))}
+              <div className="bg-white rounded-[2rem] border border-zinc-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
+                {/* Weekday Strip */}
+                <div className="grid grid-cols-7 border-b border-zinc-50 bg-zinc-50/50">
+                  {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((day, idx) => {
+                    const today = new Date().getDay();
+                    const dayIndex = idx + 1 > 6 ? 0 : idx + 1; // Adjust for Sunday being 0
+                    const isToday = today === dayIndex;
+
+                    return (
+                      <div key={day} className={`py-4 text-center border-r border-zinc-50 last:border-0 transition-colors ${isToday ? 'bg-white shadow-[inset_0_-2px_0_0_#059669]' : ''}`}>
+                        <span className={`text-[10px] font-black tracking-[0.2em] ${isToday ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                          {day}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="p-8">
-                  <div className="flex items-start gap-6">
-                    <div className="h-24 w-24 rounded-2xl bg-zinc-100 overflow-hidden flex-none">
-                      <Image alt="Lentil Soup" className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=1471&auto=format&fit=crop" height={100} width={100} />
+
+                {/* Meal Card Content */}
+                <div className="p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                    <div className="h-32 w-32 sm:h-28 sm:w-28 rounded-2xl bg-zinc-100 overflow-hidden flex-none shadow-inner border border-zinc-100">
+                      <Image
+                        alt="Today's Meal"
+                        className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+                        src="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=1471&auto=format&fit=crop"
+                        height={120}
+                        width={120}
+                      />
                     </div>
-                    <div className="flex-grow">
+                    <div className="flex-grow text-center sm:text-left w-full">
                       <div className="flex justify-between items-start">
-                        <div>
-                          <span className="text-[10px] uppercase text-emerald-700 font-black tracking-widest">Today&apos;s Dinner</span>
-                          <h4 className="text-2xl font-black text-emerald-900 mt-1">Spiced Red Lentil Soup</h4>
+                        <div className="space-y-1">
+                          <span className="text-[11px] uppercase text-emerald-600 font-black tracking-[0.15em] bg-emerald-50 px-2 py-0.5 rounded">
+                            Today&apos;s {new Date().getHours() < 11 ? 'Breakfast' : new Date().getHours() < 16 ? 'Lunch' : 'Dinner'}
+                          </span>
+                          <h4 className="text-2xl font-black text-emerald-900 leading-tight pt-1">Spiced Red Lentil Soup</h4>
                         </div>
-                        <button className="text-zinc-400 hover:text-emerald-900 transition-colors p-2 rounded-full hover:bg-zinc-50">
-                          <MoreHorizontal className="h-5 w-5" />
+                        <button className="text-zinc-300 hover:text-emerald-900 transition-all p-2 rounded-xl hover:bg-zinc-50 -mr-2">
+                          <MoreHorizontal className="h-6 w-6" />
                         </button>
                       </div>
-                      <div className="flex gap-6 mt-4">
-                        <span className="flex items-center gap-2 text-xs font-bold text-zinc-500 bg-zinc-50 px-3 py-1.5 rounded-full">
-                          <Utensils className="h-3.5 w-3.5 text-emerald-700" /> 2 Servings
-                        </span>
-                        <span className="flex items-center gap-2 text-xs font-bold text-zinc-500 bg-zinc-50 px-3 py-1.5 rounded-full">
-                          <Activity className="h-3.5 w-3.5 text-emerald-700" /> 420 kcal
-                        </span>
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-4 mt-5">
+                        <div className="flex items-center gap-2.5 text-[13px] font-bold text-zinc-600 bg-zinc-50 px-4 py-2 rounded-xl border border-zinc-100/50">
+                          <Utensils className="h-4 w-4 text-emerald-600" />
+                          <span>2 Servings</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-[13px] font-bold text-zinc-600 bg-zinc-50 px-4 py-2 rounded-xl border border-zinc-100/50">
+                          <Activity className="h-4 w-4 text-emerald-600" />
+                          <span>420 kcal</span>
+                        </div>
                       </div>
                     </div>
                   </div>

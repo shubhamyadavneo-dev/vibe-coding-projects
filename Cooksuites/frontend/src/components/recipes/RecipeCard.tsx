@@ -53,7 +53,7 @@ export function RecipeCard({ recipe, className, onClick, onDelete }: RecipeCardP
           {imageUrl ? (
             <Image
               alt={recipe.title}
-              className="w-full h-full object-cover transition-transform duration-500 ease-out"
+              className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
               src={imageUrl}
               width={500}
               height={400}

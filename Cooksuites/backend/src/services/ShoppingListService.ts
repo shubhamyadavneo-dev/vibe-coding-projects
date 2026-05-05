@@ -1,7 +1,6 @@
-import { PrismaClient, ShoppingList } from '@prisma/client';
+import { ShoppingList } from '@prisma/client';
+import prisma from '../lib/prisma';
 import { UnitConverter, ParsedIngredient } from '../utils/unitConverter';
-
-const prisma = new PrismaClient();
 
 export class ShoppingListService {
   async generateFromRecipes(recipeIds: string[], userId: string, listName: string): Promise<ShoppingList> {

@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 import { z } from 'zod';
 import { shoppingListService } from './ShoppingListService';
 import { ForbiddenError, NotFoundError } from '../middleware/error';
-
-const prisma = new PrismaClient();
 
 export const CreateMealPlanSchema = z.object({
   name: z.string().min(1).max(100),

@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 import { z } from 'zod';
 import { AuthRequest } from '../middleware/auth';
-
-const prisma = new PrismaClient();
 
 const UpdateProfileSchema = z.object({
   fullName: z.string().min(2).max(100).regex(/^[a-zA-Z\s\-']+$/, 'Only letters, spaces, hyphens, and apostrophes are allowed'),

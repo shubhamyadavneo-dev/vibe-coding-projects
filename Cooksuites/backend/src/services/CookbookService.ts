@@ -1,7 +1,6 @@
-import { PrismaClient, Cookbook } from '@prisma/client';
+import { Cookbook } from '@prisma/client';
+import prisma from '../lib/prisma';
 import { mediaStorageService } from './MediaStorageService';
-
-const prisma = new PrismaClient();
 
 export interface CookbookCreateInput {
   name: string;

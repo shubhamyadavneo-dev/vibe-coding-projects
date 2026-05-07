@@ -1,7 +1,6 @@
-import { PrismaClient, Recipe } from '@prisma/client';
+import { Recipe } from '@prisma/client';
+import prisma from '../lib/prisma';
 import { mediaStorageService } from './MediaStorageService';
-
-const prisma = new PrismaClient();
 
 export interface RecipeCreateInput {
   title: string;

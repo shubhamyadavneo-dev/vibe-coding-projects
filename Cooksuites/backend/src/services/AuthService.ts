@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-
-const prisma = new PrismaClient();
 
 export class AuthService {
   private readonly BCRYPT_ROUNDS = 12;

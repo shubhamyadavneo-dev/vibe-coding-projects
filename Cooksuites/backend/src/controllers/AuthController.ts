@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 import { authService } from '../services/AuthService';
 import { emailService } from '../services/EmailService';
 import { z } from 'zod';
 import { AuthRequest } from '../middleware/auth';
-
-const prisma = new PrismaClient();
 
 const RegisterSchema = z.object({
   email: z.string().email(),

@@ -2,10 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { recipeService } from '../services/RecipeService';
 import { z } from 'zod';
 import { AuthRequest } from '../middleware/auth';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 import { emailService } from '../services/EmailService';
-
-const prisma = new PrismaClient();
 
 const RecipeSchema = z.object({
   title: z.string().min(3).max(200),
@@ -32,7 +30,7 @@ const RecipeUpdateSchema = RecipeSchema.partial();
 
 export class RecipeController {
 
-  async createRecipe(req: AuthRequest, res: Response, next: NextFunction) {
+  createRecipe = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       // Handle stringified JSON from multipart/form-data
       if (typeof req.body.ingredients === 'string') {
@@ -88,7 +86,7 @@ export class RecipeController {
     }
   }
 
-  async updateRecipe(req: AuthRequest, res: Response, next: NextFunction) {
+  updateRecipe = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const recipeId = req.params.id as string;
 
@@ -145,39 +143,21 @@ export class RecipeController {
     }
   }
 
-  async getRecipe(req: Request, res: Response, next: NextFunction) {
+  getRecipes = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const recipe = await recipeService.getRecipe(req.params.id?.toString());
-      if (!recipe) {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: 'Recipe not found' }
-        });
-      }
+      const { q, mealType, dietType, difficulty, categoryId, category, minTime, maxTime, cursor, limit } = req.query;
 
-      res.status(200).json({
-        success: true,
-        data: recipe,
-        meta: { timestamp: new Date().toISOString(), requestId: req.headers['x-request-id'] as string }
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async listRecipes(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { q, mealType, dietType, difficulty, categoryId, minTime, maxTime, cursor, limit } = req.query;
+      const cleanQuery = (val: any) => (val === 'undefined' || val === 'null' ? undefined : val);
 
       const result = await recipeService.listRecipes({
-        q: q as string,
-        mealType: mealType as string,
-        dietType: dietType as string,
-        difficulty: difficulty as string,
-        categoryId: categoryId as string,
+        q: cleanQuery(q) as string,
+        mealType: cleanQuery(mealType) as string,
+        dietType: cleanQuery(dietType) as string,
+        difficulty: cleanQuery(difficulty) as string,
+        categoryId: cleanQuery(categoryId || category) as string,
         minTime: minTime ? parseInt(minTime as string, 10) : undefined,
         maxTime: maxTime ? parseInt(maxTime as string, 10) : undefined,
-        cursor: cursor as string,
+        cursor: cleanQuery(cursor) as string,
         limit: limit ? parseInt(limit as string, 10) : 20
       });
 
@@ -198,35 +178,49 @@ export class RecipeController {
     }
   }
 
-  async deleteRecipe(req: AuthRequest, res: Response, next: NextFunction) {
+  getRecipe = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const recipeId = req.params.id as string;
-      const existing = await prisma.recipe.findUnique({ where: { id: recipeId } });
-      if (!existing || existing.deletedAt) {
-        return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Recipe not found' } });
-      }
-
-      // Check if user is owner or admin
-      const userId = req.user?.id;
-      const isAdmin = await prisma.userRole.findFirst({
-        where: {
-          userId,
-          role: { name: 'admin' }
-        }
-      });
-
-      if (existing.userId !== userId && !isAdmin) {
-        return res.status(403).json({ 
-          success: false, 
-          error: { code: 'FORBIDDEN', message: 'You can only delete your own recipes' } 
+      const recipe = await recipeService.getRecipe(req.params.id?.toString());
+      if (!recipe) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Recipe not found' }
         });
       }
 
-      await recipeService.deleteRecipe(recipeId);
+      res.status(200).json({
+        success: true,
+        data: recipe,
+        meta: { timestamp: new Date().toISOString(), requestId: req.headers['x-request-id'] as string }
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  listRecipes = async (req: Request, res: Response, next: NextFunction) => {
+    return this.getRecipes(req, res, next);
+  }
+
+  deleteRecipe = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user!.id;
+
+      const recipe = await prisma.recipe.findUnique({ where: { id: String(id) } });
+      if (!recipe || recipe.deletedAt) {
+        return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Recipe not found' } });
+      }
+
+      if (recipe.userId !== userId) {
+        return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'You can only delete your own recipes' } });
+      }
+
+      await recipeService.deleteRecipe(String(id));
 
       res.status(200).json({
         success: true,
-        data: { deleted: true },
+        message: 'Recipe deleted successfully',
         meta: { timestamp: new Date().toISOString(), requestId: req.headers['x-request-id'] as string }
       });
     } catch (error) {

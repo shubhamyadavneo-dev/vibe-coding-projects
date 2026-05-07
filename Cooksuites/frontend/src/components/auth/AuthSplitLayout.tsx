@@ -24,8 +24,11 @@ export function AuthSplitLayout({
   return (
     <div className="min-h-screen flex items-center justify-center p-xl bg-background">
       <div className="flex w-full max-w-[1100px] bg-white rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-700 to-emerald-500">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_45%)]" />
+        <div 
+          className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: "url('/cookingmain-1520371866.avif')" }}
+        >
+          <div className="absolute inset-0 bg-black/50" />
           <div className="relative z-10 p-xl flex flex-col justify-between h-full w-full">
             <div>
               <h2 className="text-white font-display-xl text-display-xl tracking-tight mb-md">{leftTitle}</h2>

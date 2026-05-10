@@ -1,0 +1,356 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// model User {
+//   id            Int      @id @default(autoincrement())
+//   email         String   @unique
+//   password_hash String
+//   name          String
+//   is_verified   Boolean  @default(false)
+//   created_at    DateTime @default(now())
+//   updated_at    DateTime @updatedAt
+
+//   refreshTokens            RefreshToken[]
+//   passwordResetTokens      PasswordResetToken[]
+//   emailVerificationTokens  EmailVerificationToken[]
+// }
+
+// model RefreshToken {
+//   id         Int       @id @default(autoincrement())
+//   token      String    @unique
+//   user_id    Int
+//   user       User      @relation(fields: [user_id], references: [id])
+//   expires_at DateTime
+//   revoked_at DateTime?
+//   created_at DateTime  @default(now())
+// }
+
+// model PasswordResetToken {
+//   id         Int       @id @default(autoincrement())
+//   token      String    @unique
+//   user_id    Int
+//   user       User      @relation(fields: [user_id], references: [id])
+//   expires_at DateTime
+//   used_at    DateTime?
+//   created_at DateTime  @default(now())
+// }
+
+// model EmailVerificationToken {
+//   id         Int       @id @default(autoincrement())
+//   token      String    @unique
+//   user_id    Int
+//   user       User      @relation(fields: [user_id], references: [id])
+//   expires_at DateTime
+//   created_at DateTime  @default(now())
+// }
+
+
+
+
+// ─── ENUMS ────────────────────────────────────────────────
+
+enum Goal {
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  STAY_HEALTHY
+}
+
+enum Timeframe {
+  THREE_MONTHS   // 90 days
+  SIX_MONTHS     // 180 days
+  ONE_YEAR       // 365 days
+}
+
+enum RoutineType {
+  ALTERNATE      // Mon, Wed, Fri
+  DAILY          // Mon to Sat
+  WEEKEND        // Sat, Sun
+}
+
+enum WorkoutType {
+  UNI            // one muscle/day
+  DOUBLE         // two muscles/day
+  FULL_BODY      // full body
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  SHOULDERS
+  BICEPS
+  TRICEPS
+  FOREARMS
+  QUADS
+  HAMSTRINGS
+  GLUTES
+  CALVES
+  ABS
+  CARDIO
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// ─── AUTH ─────────────────────────────────────────────────
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password_hash String
+  name          String
+  is_verified   Boolean  @default(false)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  profile                 Profile?
+  userPlan                UserPlan?
+  workoutLogs             WorkoutLog[]
+  bodyWeights             BodyWeight[]
+  bodyMeasurements        BodyMeasurement[]
+  personalRecords         PersonalRecord[]
+  refreshTokens           RefreshToken[]
+  passwordResetTokens     PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+}
+
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  token      String    @unique
+  user_id    Int
+  user       User      @relation(fields: [user_id], references: [id])
+  expires_at DateTime
+  revoked_at DateTime?
+  created_at DateTime  @default(now())
+}
+
+model PasswordResetToken {
+  id         Int       @id @default(autoincrement())
+  token      String    @unique
+  user_id    Int
+  user       User      @relation(fields: [user_id], references: [id])
+  expires_at DateTime
+  used_at    DateTime?
+  created_at DateTime  @default(now())
+}
+
+model EmailVerificationToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+  expires_at DateTime
+  created_at DateTime @default(now())
+}
+
+// ─── PROFILE ──────────────────────────────────────────────
+
+model Profile {
+  id            Int       @id @default(autoincrement())
+  user_id       Int       @unique
+  user          User      @relation(fields: [user_id], references: [id])
+  avatar_url    String?
+  date_of_birth DateTime?
+  gender        Gender?
+  height_cm     Float?
+  weight_kg     Float?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+}
+
+// ─── EXERCISE LIBRARY ─────────────────────────────────────
+
+model Muscle {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  group     MuscleGroup @unique
+  exercises Exercise[]
+  image_url String?
+}
+
+model Exercise {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  description  String?
+  instructions String?
+  image_url    String?
+  video_url    String?
+  muscle_id    Int
+  muscle       Muscle   @relation(fields: [muscle_id], references: [id])
+
+  userPlanDayExercises UserPlanDayExercise[]
+  workoutSets          WorkoutSet[]
+  personalRecords      PersonalRecord[]
+  planDayExercise      PlanDayExercise[]
+}
+
+// ─── PLAN TEMPLATES (27 predefined by you) ────────────────
+
+model PlanTemplate {
+  id           Int         @id @default(autoincrement())
+  goal         Goal
+  routine_type RoutineType
+  workout_type WorkoutType
+  description  String?
+  created_at   DateTime    @default(now())
+
+  dayTemplates PlanDayTemplate[]
+  userPlans    UserPlan[]
+
+  @@unique([goal, routine_type, workout_type])
+}
+
+// Each day structure in a template
+model PlanDayTemplate {
+  id               Int         @id @default(autoincrement())
+  plan_template_id Int
+  plan_template    PlanTemplate @relation(fields: [plan_template_id], references: [id])
+  day_number       Int          // 1, 2, 3... (cycle position)
+  day_of_week      DayOfWeek
+  workout_type     WorkoutType
+  label            String?      // e.g. "Chest Day", "Full Body"
+
+  exercises        PlanDayExercise[]
+}
+
+// Exercises in each template day
+model PlanDayExercise {
+  id                   Int             @id @default(autoincrement())
+  plan_day_template_id Int
+  plan_day_template    PlanDayTemplate @relation(fields: [plan_day_template_id], references: [id])
+  exercise_id          Int
+  exercise             Exercise        @relation(fields: [exercise_id], references: [id])
+  recommended_sets     Int
+  recommended_reps     Int
+  order                Int
+}
+
+// ─── USER PLAN ────────────────────────────────────────────
+
+model UserPlan {
+  id               Int         @id @default(autoincrement())
+  user_id          Int         @unique   // one active plan per user
+  user             User        @relation(fields: [user_id], references: [id])
+  plan_template_id Int
+  plan_template    PlanTemplate @relation(fields: [plan_template_id], references: [id])
+  goal             Goal
+  timeframe        Timeframe
+  routine_type     RoutineType
+  start_date       DateTime
+  end_date         DateTime
+  is_active        Boolean     @default(true)
+  killed_at        DateTime?
+  created_at       DateTime    @default(now())
+
+  planDays         UserPlanDay[]
+}
+
+// Generated days with actual dates
+model UserPlanDay {
+  id             Int         @id @default(autoincrement())
+  user_plan_id   Int
+  user_plan      UserPlan    @relation(fields: [user_plan_id], references: [id])
+  day_number     Int         // Day 1, Day 2...
+  scheduled_date DateTime    // actual date e.g. May 5
+  day_of_week    DayOfWeek
+  workout_type   WorkoutType
+  label          String?     // e.g. "Chest Day"
+  is_rest_day    Boolean     @default(false)
+  created_at     DateTime    @default(now())
+
+  exercises      UserPlanDayExercise[]
+  workoutLog     WorkoutLog?
+}
+
+// Exercises assigned to each generated day
+model UserPlanDayExercise {
+  id               Int         @id @default(autoincrement())
+  user_plan_day_id Int
+  user_plan_day    UserPlanDay @relation(fields: [user_plan_day_id], references: [id])
+  exercise_id      Int
+  exercise         Exercise    @relation(fields: [exercise_id], references: [id])
+  recommended_sets Int
+  recommended_reps Int
+  order            Int
+}
+
+// ─── WORKOUT LOGGING ──────────────────────────────────────
+
+model WorkoutLog {
+  id               Int         @id @default(autoincrement())
+  user_plan_day_id Int         @unique   // one log per day
+  user_plan_day    UserPlanDay @relation(fields: [user_plan_day_id], references: [id])
+  user_id          Int
+  user             User        @relation(fields: [user_id], references: [id])
+  completed        Boolean     @default(false)
+  duration_minutes Int?
+  notes            String?
+  logged_at        DateTime    @default(now())
+
+  sets             WorkoutSet[]
+}
+
+// Actual sets logged
+model WorkoutSet {
+  id             Int        @id @default(autoincrement())
+  workout_log_id Int
+  workout_log    WorkoutLog @relation(fields: [workout_log_id], references: [id])
+  exercise_id    Int
+  exercise       Exercise   @relation(fields: [exercise_id], references: [id])
+  set_number     Int
+  reps           Int
+  weight_kg      Float?
+  created_at     DateTime   @default(now())
+}
+
+// ─── PROGRESS TRACKING ────────────────────────────────────
+
+model BodyWeight {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+  weight_kg  Float
+  logged_at  DateTime @default(now())
+}
+
+model BodyMeasurement {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [id])
+  chest_cm    Float?
+  waist_cm    Float?
+  arms_cm     Float?
+  thighs_cm   Float?
+  calves_cm   Float?
+  shoulders_cm Float?
+  logged_at   DateTime @default(now())
+}
+
+model PersonalRecord {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [id])
+  exercise_id Int
+  exercise    Exercise @relation(fields: [exercise_id], references: [id])
+  weight_kg   Float
+  reps        Int
+  achieved_at DateTime @default(now())
+}

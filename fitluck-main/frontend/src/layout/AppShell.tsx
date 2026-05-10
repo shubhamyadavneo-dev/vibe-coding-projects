@@ -1,6 +1,7 @@
 import {
   Activity,
   BarChart3,
+  Calculator,
   CalendarDays,
   Dumbbell,
   Home,
@@ -22,6 +23,7 @@ const navItems = [
   { to: '/progress', label: 'Progress', icon: TrendingUp },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/exercises', label: 'Exercises', icon: Library },
+  { to: '/calculators', label: 'Calculators', icon: Calculator },
 ]
 
 const titles: Record<string, string> = {
@@ -31,6 +33,7 @@ const titles: Record<string, string> = {
   '/progress': 'Progress',
   '/analytics': 'Analytics',
   '/exercises': 'Exercises',
+  '/calculators': 'Calculators',
 }
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {

@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './auth/useAuth'
 import { AppShell } from './layout/AppShell'
 import { AnalyticsPage } from './pages/AnalyticsPage'
+import { CalculatorsPage } from './pages/CalculatorsPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { ExercisesPage } from './pages/ExercisesPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
@@ -32,6 +33,7 @@ function App() {
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/exercises" element={<ExercisesPage />} />
+        <Route path="/calculators" element={<CalculatorsPage />} />
       </Route>
       <Route path="*" element={<Navigate to={isAuthenticated ? '/' : '/login'} replace />} />
     </Routes>

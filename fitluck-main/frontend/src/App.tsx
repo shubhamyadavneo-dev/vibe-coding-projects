@@ -9,6 +9,7 @@ import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { LoginPage } from './pages/LoginPage'
 import { PlanPage } from './pages/PlanPage'
 import { ProgressPage } from './pages/ProgressPage'
+import { ProgressPhotosPage } from './pages/ProgressPhotosPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { WorkoutPage } from './pages/WorkoutPage'
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/exercises" element={<ExercisesPage />} />
         <Route path="/calculators" element={<CalculatorsPage />} />
+        <Route path="/progress-photos" element={<ProgressPhotosPage />} />
       </Route>
       <Route path="*" element={<Navigate to={isAuthenticated ? '/' : '/login'} replace />} />
     </Routes>

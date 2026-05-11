@@ -127,6 +127,7 @@ model User {
   bodyWeights             BodyWeight[]
   bodyMeasurements        BodyMeasurement[]
   personalRecords         PersonalRecord[]
+  progressPhotos          ProgressPhoto[]
   refreshTokens           RefreshToken[]
   passwordResetTokens     PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
@@ -353,4 +354,17 @@ model PersonalRecord {
   weight_kg   Float
   reps        Int
   achieved_at DateTime @default(now())
+}
+
+// ─── PROGRESS PHOTOS ──────────────────────────────────────
+
+model ProgressPhoto {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      User     @relation(fields: [user_id], references: [id])
+  imageData String   // base64 encoded image
+  note      String?
+  date      DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

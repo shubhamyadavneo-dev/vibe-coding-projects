@@ -148,3 +148,11 @@ export type CalendarDay = {
   completed: boolean
   log_id: number | null
 }
+
+export type ProgressPhoto = {
+  id: number
+  imageData: string
+  note?: string
+  date: string
+  created_at: string
+}

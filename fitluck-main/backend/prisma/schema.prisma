@@ -131,6 +131,7 @@ model User {
   refreshTokens           RefreshToken[]
   passwordResetTokens     PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
+  workoutTemplates        WorkoutTemplate[]
 }
 
 model RefreshToken {
@@ -367,4 +368,13 @@ model ProgressPhoto {
   date      DateTime
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model WorkoutTemplate {
+  id         String   @id @default(cuid())
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+  name       String
+  exercises  Json
+  created_at DateTime @default(now())
 }

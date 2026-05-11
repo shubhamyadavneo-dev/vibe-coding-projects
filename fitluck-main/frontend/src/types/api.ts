@@ -149,6 +149,20 @@ export type CalendarDay = {
   log_id: number | null
 }
 
+export type WorkoutTemplateExercise = {
+  name: string
+  sets: number
+  reps: number
+}
+
+export type WorkoutTemplate = {
+  id: string
+  user_id: number
+  name: string
+  exercises: WorkoutTemplateExercise[]
+  created_at: string
+}
+
 export type ProgressPhoto = {
   id: number
   imageData: string

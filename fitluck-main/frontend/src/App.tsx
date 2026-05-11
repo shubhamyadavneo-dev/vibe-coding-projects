@@ -12,6 +12,7 @@ import { ProgressPage } from './pages/ProgressPage'
 import { ProgressPhotosPage } from './pages/ProgressPhotosPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { WorkoutPage } from './pages/WorkoutPage'
+import { WorkoutTemplatesPage } from './pages/WorkoutTemplatesPage'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth()
@@ -33,6 +34,7 @@ function App() {
         <Route path="/workout" element={<WorkoutPage />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/workout-templates" element={<WorkoutTemplatesPage />} />
         <Route path="/exercises" element={<ExercisesPage />} />
         <Route path="/calculators" element={<CalculatorsPage />} />
         <Route path="/progress-photos" element={<ProgressPhotosPage />} />

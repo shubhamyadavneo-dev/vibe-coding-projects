@@ -1,4 +1,4 @@
-import type { ProgressPhoto } from '../types/api'
+import type { ProgressPhoto } from '../../types/api'
 import { PhotoCard } from './PhotoCard'
 
 interface PhotoGalleryProps {

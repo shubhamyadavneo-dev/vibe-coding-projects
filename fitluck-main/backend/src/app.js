@@ -14,6 +14,7 @@ app.use('/api/plan', require('./routes/plan'))
 app.use('/api/logs', require('./routes/log'))
 app.use('/api/progress', require('./routes/progress'))
 app.use('/api/progress-photos', require('./routes/progressPhotos'))
+app.use('/api/workout-templates', require('./routes/workoutTemplates'))
 app.use('/api/analytics', require('./routes/analytics'))
 
 // Health check

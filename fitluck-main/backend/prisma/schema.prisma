@@ -132,6 +132,8 @@ model User {
   passwordResetTokens     PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
   workoutTemplates        WorkoutTemplate[]
+  exerciseNotes           ExerciseNote[]
+  userBadges              UserBadge[]
 }
 
 model RefreshToken {
@@ -202,6 +204,7 @@ model Exercise {
   workoutSets          WorkoutSet[]
   personalRecords      PersonalRecord[]
   planDayExercise      PlanDayExercise[]
+  exerciseNotes        ExerciseNote[]
 }
 
 // ─── PLAN TEMPLATES (27 predefined by you) ────────────────
@@ -376,5 +379,38 @@ model WorkoutTemplate {
   user       User     @relation(fields: [user_id], references: [id])
   name       String
   exercises  Json
+  is_public  Boolean  @default(false)
   created_at DateTime @default(now())
+}
+
+model ExerciseNote {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [id])
+  exercise_id Int
+  exercise    Exercise @relation(fields: [exercise_id], references: [id])
+  note        String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@unique([user_id, exercise_id])
+}
+
+model Badge {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  description String
+  icon        String
+  userBadges  UserBadge[]
+}
+
+model UserBadge {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      User     @relation(fields: [user_id], references: [id])
+  badge_id  Int
+  badge     Badge    @relation(fields: [badge_id], references: [id])
+  earned_at DateTime @default(now())
+
+  @@unique([user_id, badge_id])
 }

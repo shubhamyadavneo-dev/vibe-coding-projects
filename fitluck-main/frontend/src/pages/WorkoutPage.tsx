@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { api, getErrorMessage } from '../api/client'
 import { EmptyState, FieldError, LoadingBlock, PageTitle } from '../components/Ui'
+import { RestTimer } from '../components/RestTimer'
+import { ExerciseNoteBlock } from '../components/ExerciseNoteBlock'
 import type { PlanDay, WorkoutLog } from '../types/api'
 
 const logSchema = Yup.object({
@@ -61,12 +63,14 @@ export function WorkoutPage() {
     <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
       <section className="space-y-4">
         <PageTitle kicker={new Date(today.scheduled_date).toLocaleDateString()} title={today.label || today.workout_type} />
+        <RestTimer />
         <div className="grid gap-3 sm:grid-cols-2">
           {(today.exercises || []).map((item) => (
             <div key={item.id} className="fit-card p-4">
               <p className="font-black text-stone-950 dark:text-stone-100">{item.exercise.name}</p>
               <p className="mt-1 text-sm text-stone-500">{item.exercise.muscle?.name}</p>
               <p className="mt-3 text-sm font-bold text-lime-700">{item.recommended_sets} sets x {item.recommended_reps} reps</p>
+              <ExerciseNoteBlock exerciseId={item.exercise.id} />
             </div>
           ))}
         </div>

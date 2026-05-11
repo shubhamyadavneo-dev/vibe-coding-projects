@@ -10,6 +10,7 @@ export function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [consistency, setConsistency] = useState<Consistency | null>(null)
   const [weights, setWeights] = useState<WeightEntry[]>([])
+  const [badges, setBadges] = useState<{ earned: any[], all: any[] }>({ earned: [], all: [] })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -18,16 +19,18 @@ export function DashboardPage() {
       setLoading(true)
       setError('')
       try {
-        const [todayRes, statsRes, consistencyRes, weightRes] = await Promise.allSettled([
+        const [todayRes, statsRes, consistencyRes, weightRes, badgeRes] = await Promise.allSettled([
           api.get<PlanDay>('/plan/today'),
           api.get<Stats>('/analytics/stats'),
           api.get<Consistency>('/analytics/consistency'),
           api.get<WeightEntry[]>('/progress/weight'),
+          api.get<{ earned: any[], all: any[] }>('/badges')
         ])
         if (todayRes.status === 'fulfilled') setToday(todayRes.value.data)
         if (statsRes.status === 'fulfilled') setStats(statsRes.value.data)
         if (consistencyRes.status === 'fulfilled') setConsistency(consistencyRes.value.data)
         if (weightRes.status === 'fulfilled') setWeights(weightRes.value.data)
+        if (badgeRes.status === 'fulfilled') setBadges(badgeRes.value.data)
       } catch (err) {
         setError(getErrorMessage(err))
       } finally {
@@ -97,12 +100,33 @@ export function DashboardPage() {
         </section>
       </div>
 
-      <section className="fit-card p-5">
-        <h2 className="mb-4 text-lg font-black text-stone-950 dark:text-stone-100">Weight trend</h2>
-        <div className="h-72">
-          {weights.length ? <WeightChart labels={weightLabels} values={weightValues} /> : <EmptyState title="No weight logs yet" detail="Add your first weight entry from Progress." />}
-        </div>
-      </section>
+      <div className="grid gap-5 xl:grid-cols-2">
+        <section className="fit-card p-5">
+          <h2 className="mb-4 text-lg font-black text-stone-950 dark:text-stone-100">Weight trend</h2>
+          <div className="h-72">
+            {weights.length ? <WeightChart labels={weightLabels} values={weightValues} /> : <EmptyState title="No weight logs yet" detail="Add your first weight entry from Progress." />}
+          </div>
+        </section>
+
+        <section className="fit-card p-5">
+          <h2 className="mb-4 text-lg font-black text-stone-950 dark:text-stone-100">Achievements</h2>
+          {badges.all.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {badges.all.map(badge => {
+                const isEarned = badges.earned.some(ub => ub.badge_id === badge.id)
+                return (
+                  <div key={badge.id} className={`flex flex-col items-center p-3 rounded-xl border text-center ${isEarned ? 'bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-700/50' : 'bg-stone-50 border-stone-200 dark:bg-stone-900/50 dark:border-stone-800 opacity-50 grayscale'}`}>
+                    <span className="text-3xl mb-2">{badge.icon}</span>
+                    <span className="text-xs font-bold text-stone-900 dark:text-stone-100 leading-tight">{badge.name}</span>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <EmptyState title="No badges yet" detail="Keep working out to earn achievements!" />
+          )}
+        </section>
+      </div>
     </div>
   )
 }

@@ -16,6 +16,8 @@ app.use('/api/progress', require('./routes/progress'))
 app.use('/api/progress-photos', require('./routes/progressPhotos'))
 app.use('/api/workout-templates', require('./routes/workoutTemplates'))
 app.use('/api/analytics', require('./routes/analytics'))
+app.use('/api/notes', require('./routes/notes'))
+app.use('/api/badges', require('./routes/badges'))
 
 // Health check
 app.get('/', (req, res) => {

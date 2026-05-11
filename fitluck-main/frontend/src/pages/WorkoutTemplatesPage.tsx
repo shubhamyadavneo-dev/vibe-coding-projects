@@ -67,6 +67,22 @@ export function WorkoutTemplatesPage() {
     setMessage(`Selected template: ${template.name}`)
   }
 
+  const handleShare = async (template: WorkoutTemplate) => {
+    setError('')
+    try {
+      if (!template.is_public) {
+        await api.post(`/workout-templates/${template.id}/share`)
+        await loadTemplates()
+      }
+      
+      const shareUrl = `${window.location.origin}/shared-template/${template.id}`
+      await navigator.clipboard.writeText(shareUrl)
+      setMessage('Share link copied to clipboard!')
+    } catch (err) {
+      setError(getErrorMessage(err))
+    }
+  }
+
   return (
     <div className="space-y-6">
       <PageTitle kicker="Templates" title="Workout templates" />
@@ -103,6 +119,7 @@ export function WorkoutTemplatesPage() {
               selected={selectedTemplate?.id === template.id}
               onUse={() => handleUse(template)}
               onDelete={() => handleDelete(template.id)}
+              onShare={() => handleShare(template)}
             />
           ))}
         </div>

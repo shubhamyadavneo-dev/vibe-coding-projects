@@ -29,7 +29,6 @@ const validationSchema = Yup.object({
 
 export function BodyFatCalculator() {
   const [result, setResult] = useState<BodyFatResult | null>(null)
-  const [gender, setGender] = useState<'male' | 'female'>('male')
 
   return (
     <div className="space-y-6">
@@ -46,7 +45,6 @@ export function BodyFatCalculator() {
           validationSchema={validationSchema}
           onSubmit={(values) => {
             const genderVal = values.gender as 'male' | 'female'
-            setGender(genderVal)
 
             const abdomenVal = values.abdomen ? Number(values.abdomen) : null
             const hipsVal = values.hips ? Number(values.hips) : null
@@ -71,10 +69,7 @@ export function BodyFatCalculator() {
                 <select
                   name="gender"
                   value={values.gender}
-                  onChange={(e) => {
-                    handleChange(e)
-                    setGender(e.target.value as 'male' | 'female')
-                  }}
+                  onChange={handleChange}
                   className="fit-input mt-1"
                 >
                   <option value="male">Male</option>

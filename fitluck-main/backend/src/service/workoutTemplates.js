@@ -23,8 +23,23 @@ const deleteTemplate = async (user_id, templateId) => {
   return { message: 'Template deleted successfully' }
 }
 
+const shareTemplate = async (user_id, templateId) => {
+  const template = await workoutTemplatesRepository.findById(templateId, user_id)
+  if (!template) throw new Error('Template not found')
+
+  return workoutTemplatesRepository.update(templateId, user_id, { is_public: true })
+}
+
+const getSharedTemplate = async (templateId) => {
+  const template = await workoutTemplatesRepository.findPublicById(templateId)
+  if (!template) throw new Error('Shared template not found')
+  return template
+}
+
 module.exports = {
   getTemplates,
   createTemplate,
   deleteTemplate,
+  shareTemplate,
+  getSharedTemplate
 }

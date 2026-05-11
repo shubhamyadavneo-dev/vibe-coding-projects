@@ -1,8 +1,12 @@
 const logService = require('../service/log')
+const badgeService = require('../service/badges')
 
 const createLog = async (req, res) => {
   try {
     const log = await logService.createLog(req.user.id, req.params.planDayId, req.body)
+    if (log.completed) {
+      await badgeService.checkAndAwardBadges(req.user.id)
+    }
     res.status(201).json(log)
   } catch (error) {
     res.status(400).json({ message: error.message })
@@ -12,6 +16,9 @@ const createLog = async (req, res) => {
 const updateLog = async (req, res) => {
   try {
     const log = await logService.updateLog(req.user.id, req.params.planDayId, req.body)
+    if (log.completed) {
+      await badgeService.checkAndAwardBadges(req.user.id)
+    }
     res.status(200).json(log)
   } catch (error) {
     res.status(400).json({ message: error.message })

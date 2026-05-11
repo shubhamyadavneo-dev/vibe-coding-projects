@@ -160,6 +160,7 @@ export type WorkoutTemplate = {
   user_id: number
   name: string
   exercises: WorkoutTemplateExercise[]
+  is_public: boolean
   created_at: string
 }
 
@@ -169,4 +170,27 @@ export type ProgressPhoto = {
   note?: string
   date: string
   created_at: string
+}
+
+export type Badge = {
+  id: number
+  name: string
+  description: string
+  icon: string
+}
+
+export type UserBadge = {
+  id: number
+  user_id: number
+  badge_id: number
+  earned_at: string
+  badge: Badge
+}
+
+export type ExerciseNote = {
+  id: number
+  exercise_id: number
+  note: string
+  created_at: string
+  updated_at: string
 }

@@ -218,8 +218,6 @@ export class AuthController {
 
       const resetToken = await authService.generatePasswordResetToken(user.id);
 
-      console.log({ resetToken });
-
       await emailService.sendPasswordResetEmail(user.email, resetToken);
 
       res.status(200).json({ success: true, message: 'If an account with that email exists, a reset link has been sent.' });

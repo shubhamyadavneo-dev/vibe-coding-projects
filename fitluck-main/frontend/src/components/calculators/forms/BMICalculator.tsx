@@ -71,7 +71,7 @@ export function BMICalculator() {
                 <FieldError message={touched.height ? errors.height : undefined} />
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="fit-button w-full">
+              <button type="submit" className="fit-button w-full">
                 Calculate BMI
               </button>
             </Form>

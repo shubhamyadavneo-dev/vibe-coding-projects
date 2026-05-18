@@ -119,7 +119,7 @@ export function TDEECalculator() {
                 <FieldError message={touched.activityLevel ? errors.activityLevel : undefined} />
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="fit-button w-full">
+              <button type="submit" className="fit-button w-full">
                 Calculate TDEE
               </button>
             </Form>

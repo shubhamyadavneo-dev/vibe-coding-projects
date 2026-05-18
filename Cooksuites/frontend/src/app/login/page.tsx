@@ -28,8 +28,12 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await res.json();
+      console.log({email, password});
+      
 
+      const data = await res.json();
+      console.log("data", data )
+      
       if (!res.ok) {
         throw new Error(data.error?.message || 'Failed to login');
       }

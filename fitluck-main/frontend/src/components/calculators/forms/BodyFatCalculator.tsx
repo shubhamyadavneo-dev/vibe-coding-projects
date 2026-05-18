@@ -150,7 +150,7 @@ export function BodyFatCalculator() {
                 </>
               )}
 
-              <button type="submit" disabled={isSubmitting} className="fit-button w-full">
+              <button type="submit" className="fit-button w-full">
                 Calculate Body Fat
               </button>
             </Form>

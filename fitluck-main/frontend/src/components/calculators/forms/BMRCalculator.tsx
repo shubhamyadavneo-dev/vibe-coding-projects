@@ -100,7 +100,7 @@ export function BMRCalculator() {
                 <FieldError message={touched.age ? errors.age : undefined} />
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="fit-button w-full">
+              <button type="submit" className="fit-button w-full">
                 Calculate BMR
               </button>
             </Form>
